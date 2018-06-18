@@ -2,7 +2,9 @@
 #include <QSurfaceFormat>
 #include <QResizeEvent>
 
+#include <ControllersModule/controllerscontainer.h>
 #include <GraphicsToolsModule/gtcamera.h>
+#include <GraphicsToolsModule/gtplayercontrollercamera.h>
 
 #include "glrender.h"
 #include "glthread.h"
@@ -12,6 +14,7 @@ GLWidget::GLWidget(QWidget *parent)
     , _render(new GLRender())
     , _thread(new GLThread(_render.data(), this))
     , _camera(new GtCamera)
+    , _controllers(new ControllersContainer)
 {
     connect(_render.data(), SIGNAL(imageUpdated()), this, SLOT(update()));
 
@@ -28,6 +31,13 @@ GLWidget::GLWidget(QWidget *parent)
     _camera->setPosition({0.f,0.f,100.f}, {0.f,0.f,-1.f}, {0.f,1.f,0.f});
 
     _render->SetCamera(_camera.data());
+
+    new GtPlayerControllerCamera("CameraController", _controllers.data(), nullptr);
+
+    auto context = new GtControllersContext();
+    context->Camera = _camera.data();
+
+    _controllers->SetContext(context);
 }
 
 GLWidget::~GLWidget()
@@ -45,6 +55,7 @@ void GLWidget::StartRendering()
 
 void GLWidget::paintEvent(QPaintEvent* )
 {
+    _controllers->Input();
 }
 
 void GLWidget::resizeEvent(QResizeEvent* e)
@@ -66,43 +77,25 @@ void GLWidget::closeEvent(QCloseEvent* event)
 
 void GLWidget::mouseMoveEvent(QMouseEvent* event)
 {
-    Point2I resolutional_screen_pos = event->pos();
-    if(event->buttons() == Qt::MiddleButton) {
-        _camera->rotate(_lastScreenPosition - resolutional_screen_pos);
-    }
-    else if(event->buttons() == Qt::RightButton) {
-        _camera->rotateRPE(_lastScreenPosition - resolutional_screen_pos);
-    }
-    else if(event->buttons() != Qt::NoButton){
-        Vector3F dist = _lastPlanePosition - _camera->unprojectPlane(resolutional_screen_pos);
-        _camera->translate(dist.x(), dist.y());
-    }
-    _lastScreenPosition = resolutional_screen_pos;
-    _lastPlanePosition = _camera->unprojectPlane(resolutional_screen_pos);
+    _controllers->MouseMoveEvent(event);
 }
 
 void GLWidget::mousePressEvent(QMouseEvent* event)
 {
-    _lastScreenPosition = event->pos();
-    _lastPlanePosition = _camera->unprojectPlane(_lastScreenPosition);
-    if(event->buttons() == Qt::MiddleButton) {
-        _camera->setRotationPoint(_lastPlanePosition);
-    }
+    _controllers->MousePressEvent(event);
 }
 
 void GLWidget::wheelEvent(QWheelEvent* event)
 {
-    _camera->focusBind(event->pos());
-    _camera->zoom(event->delta() > 0);
-    _camera->focusRelease();
+    _controllers->WheelEvent(event);
+}
+
+void GLWidget::keyPressEvent(QKeyEvent* e)
+{
+    _controllers->KeyPressEvent(e);
 }
 
 void GLWidget::keyReleaseEvent(QKeyEvent* e)
 {
-    switch(e->key())
-    {
-    case Qt::Key_P: _camera->setIsometric(false); break;
-    case Qt::Key_I: _camera->setIsometric(true); break;
-    default: break;
-    };
+    _controllers->KeyReleaseEvent(e);
 }
