@@ -4,7 +4,7 @@
 #include <QWaitCondition>
 #include <QMutex>
 
-#include "SharedModule/stack.h"
+#include <list>
 
 class ThreadEvent
 {
@@ -33,7 +33,7 @@ protected:
     void CallEvents();
 
 private:
-    StackPointers<ThreadEvent> _events;
+    std::list<ThreadEvent> _events;
     QWaitCondition _eventsProcessed;
     QMutex _eventsMutex;
     std::atomic_bool _eventsNotified;
