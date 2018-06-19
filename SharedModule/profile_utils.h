@@ -79,10 +79,13 @@ private:
     static Stack<PerformanceClocks*>& getPerfomanceClocksInstances();
 };
 
+#define COMBINE1(X,Y) X##Y  // helper macro
+#define COMBINE(X,Y) COMBINE1(X,Y)
+
 #if !defined(QT_NO_DEBUG) || defined(PROFILE_BUILD)
 #define __PERFOMANCE__ \
-    static PerformanceClocks pClock##__LINE__(__FUNCTION__, __FILE__, __LINE__); \
-    pClock##__LINE__.Clock();
+    static PerformanceClocks COMBINE(pClock,__LINE__)(__FUNCTION__, __FILE__, __LINE__); \
+    auto COMBINE(pClock,__LINE__)##guard = COMBINE(pClock,__LINE__).Clock();
 #else
 #define __PERFOMANCE__
 #endif

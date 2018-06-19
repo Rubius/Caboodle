@@ -14,7 +14,7 @@ ThreadEventsContainer::ThreadEventsContainer()
 void ThreadEventsContainer::Asynch(ThreadEvent::FEventHandler handler)
 {
     QMutexLocker locker(&_eventsMutex);
-    _events.Push(new ThreadEvent(handler));
+    _events.emplace_back(ThreadEvent(handler));
 }
 
 void ThreadEventsContainer::ProcessEvents()
@@ -28,11 +28,15 @@ void ThreadEventsContainer::ProcessEvents()
 
 void ThreadEventsContainer::CallEvents()
 {
-    QMutexLocker locker(&_eventsMutex);
-    for(ThreadEvent* event : _events) {
-        event->call();
+    forever {
+        QMutexLocker locker(&_eventsMutex);
+        if(_events.empty()) {
+            break;
+        }
+        _events.front().call();
+        _events.erase(_events.begin());
     }
-    _events.Clear();
+
     _eventsNotified = true;
     _eventsProcessed.wakeAll();
 }
