@@ -2,6 +2,12 @@
 #include "property.h"
 #include "SharedModule/stack.h"
 
+static StackPointers<QHash<Name, Property*>>& contexts()
+{
+    static StackPointers<QHash<Name, Property*>> res(PropertiesSystem::Max);
+    return res;
+}
+
 void PropertiesSystem::SetValue(const Name& path, const QVariant& value)
 {
     auto find = context().find(path);
@@ -37,9 +43,14 @@ void PropertiesSystem::addProperty(const Name& path, Property* property) {
     context().insert(path, property);
 }
 
+QHash<Name, Property*>& PropertiesSystem::context(quint8 contextIndex)
+{
+    return *contexts()[contextIndex];
+}
+
 QHash<Name, Property*>& PropertiesSystem::context()
 {
-    static StackPointers<QHash<Name, Property*>> res(Max); return *res[currentType()];
+    return *contexts()[currentType()];
 }
 
 PropertiesSystem::FHandle PropertiesSystem::defaultHandle()

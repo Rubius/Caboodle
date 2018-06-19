@@ -9,9 +9,12 @@ class Name;
 
 class PropertiesModel : public QAbstractItemModel
 {
+    Q_OBJECT
+    Q_PROPERTY(qint32 contextIndex READ GetContextIndex WRITE SetContextIndex NOTIFY contextIndexChanged)
+    Q_PROPERTY(QString fileName READ GetFileName WRITE SetFileName NOTIFY fileNameChanged)
 public:
     enum Role {
-        RoleHeaderItem = Qt::UserRole,
+        RoleHeaderItem = Qt::UserRole, // TODO. Why header item? Where is it using?
         RoleMinValue,
         RoleMaxValue,
         RoleDelegateValue,
@@ -19,10 +22,21 @@ public:
     };
     PropertiesModel(QObject* parent=0);
 
-    void Update();
+Q_SIGNALS:
+    void fileNameChanged();
+    void contextIndexChanged();
 
-    void Save(const QString& fileName) const;
-    void Load(const QString& fileName);
+public:
+    Q_SLOT void SetContextIndex(qint32 contextIndex);
+    qint32 GetContextIndex() const;
+
+    Q_SLOT void SetFileName(const QString& fileName);
+    const QString& GetFileName() const;
+
+    Q_SLOT void Update();
+
+    Q_SLOT void Save(const QString& fileName) const;
+    Q_SLOT void Load(const QString& fileName);
 
     // QAbstractItemModel interface
 public:
@@ -36,6 +50,7 @@ public:
     QModelIndex parent(const QModelIndex& child) const Q_DECL_OVERRIDE;
     int columnCount(const QModelIndex& parent) const Q_DECL_OVERRIDE;
 
+    QHash<int, QByteArray> roleNames() const;
 private:
     friend class PropertiesModelInitializer;
     struct Item {
@@ -55,6 +70,8 @@ private:
 
 private:
     ScopedPointer<Item> _root;
+    qint32 _contextIndex;
+    QString _fileName;
 };
 
 #endif // PROPERTIESMODEL_H

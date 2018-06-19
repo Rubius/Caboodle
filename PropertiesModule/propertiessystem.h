@@ -33,6 +33,7 @@ private:
 
     static void addProperty(const Name& path, Property* property);
 
+    static QHash<Name, Property*>& context(quint8 contextIndex);
     static QHash<Name, Property*>& context();
     static FHandle defaultHandle();
     static Type& currentType();

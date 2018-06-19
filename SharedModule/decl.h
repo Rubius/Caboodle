@@ -122,6 +122,34 @@ enum Sides {
     Top
 };
 
+namespace guards {
+
+template<class Owner, typename BindFunc, typename ReleaseFunc>
+class CommonGuard
+{
+    Owner* _owner;
+    ReleaseFunc _release;
+public:
+    CommonGuard(Owner* owner, BindFunc bind, ReleaseFunc release) Q_DECL_NOEXCEPT
+        : _owner(owner)
+        , _release(release)
+    {
+        (_owner->*bind)();
+    }
+    ~CommonGuard()
+    {
+        (_owner->*_release)();
+    }
+};
+
+template<class Owner, typename BindFunc, typename ReleaseFunc>
+CommonGuard<Owner, BindFunc, ReleaseFunc> make(Owner* owner, BindFunc bind, ReleaseFunc release)
+{
+    return CommonGuard<Owner, BindFunc, ReleaseFunc>(owner, bind, release);
+}
+
+}
+
 struct CastablePtr{
     void* data;
     CastablePtr(void* d) : data(d) {}

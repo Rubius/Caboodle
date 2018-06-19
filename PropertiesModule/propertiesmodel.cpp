@@ -6,15 +6,46 @@
 
 PropertiesModel::PropertiesModel(QObject* parent)
     : QAbstractItemModel(parent)
+    , _contextIndex(-1)
 {
     reset();
+}
+
+void PropertiesModel::SetContextIndex(qint32 contextIndex)
+{
+    if(_contextIndex != contextIndex) {
+        _contextIndex = contextIndex;
+
+        Update();
+
+        emit contextIndexChanged();
+    }
+}
+
+qint32 PropertiesModel::GetContextIndex() const
+{
+    return _contextIndex;
+}
+
+void PropertiesModel::SetFileName(const QString& fileName)
+{
+    if(_fileName != fileName) {
+        _fileName = fileName;
+
+        emit fileNameChanged();
+    }
+}
+
+const QString& PropertiesModel::GetFileName() const
+{
+    return _fileName;
 }
 
 void PropertiesModel::Update()
 {
     layoutAboutToBeChanged();
 
-    const auto& tree = PropertiesSystem::context();
+    const auto& tree = PropertiesSystem::context(_contextIndex);
 
     reset(tree);
 
@@ -95,7 +126,7 @@ void PropertiesModel::Load(const QString& fileName)
 
     beginResetModel();
 
-    const auto& tree = PropertiesSystem::context();
+    const auto& tree = PropertiesSystem::context(_contextIndex);
 
     for(const QString& key : settings.allKeys()) {
         auto find = tree.find(Name(key));
@@ -220,6 +251,18 @@ QModelIndex PropertiesModel::parent(const QModelIndex& child) const
 int PropertiesModel::columnCount(const QModelIndex&) const
 {
     return 2;
+}
+
+QHash<int, QByteArray> PropertiesModel::roleNames() const
+{
+    QHash<int, QByteArray> result;
+    result[RoleHeaderItem] = "headerItem";
+    result[RoleMinValue] = "minValue";
+    result[RoleMaxValue] = "maxValue";
+    result[RoleDelegateValue] = "delegateValue";
+    result[RoleDelegateData] = "delegateData";
+    result[Qt::DisplayRole] = "text";
+    return result;
 }
 
 PropertiesModel::Item* PropertiesModel::asItem(const QModelIndex& index) const

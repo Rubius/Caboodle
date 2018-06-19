@@ -30,6 +30,7 @@ public:
     void SetCurrent(ControllerBase* controller);
     void SetCurrent(const Name& name);
     ControllerBase* GetCurrent() const { return _currentController; }
+    bool HasContext() const { return _context != nullptr; }
     template<class T> T& GetContext() { return _context->As<T>(); }
     template<class T> const T& GetContext() const { return _context->As<T>(); }
 

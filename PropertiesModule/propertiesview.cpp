@@ -1,5 +1,7 @@
 #include "propertiesview.h"
 
+#ifndef NO_WIDGETS_INTERFACE
+
 #include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
 #include <QDoubleSpinBox>
@@ -239,3 +241,5 @@ void PropertiesView::on_OpenWithTextEditor_triggered()
 }
 
 #include "propertiesview.moc"
+
+#endif

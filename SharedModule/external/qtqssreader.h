@@ -1,6 +1,8 @@
 #ifndef QTQSSREADER_H
 #define QTQSSREADER_H
 
+#ifndef NO_WIDGETS_INTERFACE
+
 #include <QString>
 
 class QtQSSReader
@@ -14,5 +16,7 @@ public:
 
     QString ReadAll() const;
 };
+
+#endif
 
 #endif // QTQSSREADER_H

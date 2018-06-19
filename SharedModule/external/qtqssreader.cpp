@@ -1,4 +1,7 @@
 #include "qtqssreader.h"
+
+#ifndef NO_WIDGETS_INTERFACE
+
 #include "SharedModule/decl.h"
 #include <QFile>
 #include <QFileInfo>
@@ -50,3 +53,5 @@ QString QtQSSReader::ReadAll() const
     }
     return result;
 }
+
+#endif

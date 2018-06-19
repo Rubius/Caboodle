@@ -1,6 +1,8 @@
 #ifndef PROPERTIESVIEW_H
 #define PROPERTIESVIEW_H
 
+#ifndef NO_WIDGETS_INTERFACE
+
 #include <QTreeView>
 #include "property.h"
 
@@ -29,5 +31,7 @@ private:
 
     QAction* _actionOpenWithTextEditor;
 };
+
+#endif
 
 #endif // PROPERTIESVIEW_H
