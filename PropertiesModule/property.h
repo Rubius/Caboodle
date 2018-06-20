@@ -27,7 +27,7 @@ public:
     Property(const QString& path);
     void SetValue(QVariant value);
 
-    FHandle& Handle() { return _fHandle; }
+    FHandle& Handler() { return _fHandle; }
     FValidator& Validator() { return _fValidator; }
     FOnChange& OnChange() { return _fOnset; }
 
