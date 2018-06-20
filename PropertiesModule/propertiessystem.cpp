@@ -39,7 +39,7 @@ void PropertiesSystem::End()
 void PropertiesSystem::addProperty(const Name& path, Property* property) {
 
     Q_ASSERT_X(!context().contains(path), "PropertiesSystem::setValue", path.AsString().toLatin1().constData());
-    property->Handle() = Begin();
+    property->Handler() = Begin();
     context().insert(path, property);
 }
 

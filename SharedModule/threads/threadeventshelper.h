@@ -4,7 +4,7 @@
 #include <QWaitCondition>
 #include <QMutex>
 
-#include <list>
+#include <queue>
 
 class ThreadEvent
 {
@@ -33,7 +33,7 @@ protected:
     void CallEvents();
 
 private:
-    std::list<ThreadEvent> _events;
+    std::queue<ThreadEvent> _events;
     QWaitCondition _eventsProcessed;
     QMutex _eventsMutex;
     std::atomic_bool _eventsNotified;
