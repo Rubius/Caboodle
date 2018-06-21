@@ -52,7 +52,6 @@ public:
 
     QHash<int, QByteArray> roleNames() const;
 private:
-    friend class PropertiesModelInitializer;
     struct Item {
         QString Name;
         Item* Parent;

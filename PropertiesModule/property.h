@@ -1,10 +1,12 @@
 #ifndef PROPERTY_H
 #define PROPERTY_H
 
+#include <QUrl>
 #include <functional>
 
 #include <SharedModule/decl.h>
 #include <SharedGuiModule/decl.h> // Vector3f
+
 
 class Property {
 protected:
@@ -57,6 +59,7 @@ public:
         , _value(initial)
     {}
 
+    T& native() { return _value; }
     T* ptr() { return &_value; }
     operator const T&() const { return _value; }
     operator T&() { return _value; }
@@ -118,6 +121,17 @@ public:
     virtual DelegateValue GetDelegateValue() const Q_DECL_OVERRIDE { return DelegateFileName; }
 };
 
+template<>
+class TProperty<QUrl> : public TPropertyBase<QUrl>
+{
+public:
+    TProperty<QUrl>(const QString& path, const QUrl& initial)
+        : TPropertyBase<QUrl>(path, initial)
+    {}
+protected:
+    virtual void setValueInternal(const QVariant& value) { this->_value = value.toUrl(); }
+};
+
 class NamedUIntProperty : public TProperty<quint32>
 {
     typedef TProperty<quint32> Super;
@@ -140,6 +154,8 @@ typedef TProperty<float> FloatProperty;
 typedef TProperty<qint32> IntProperty;
 typedef TProperty<quint32> UIntProperty;
 typedef TProperty<QString> StringProperty;
+typedef TProperty<QUrl> UrlProperty;
+
 
 class Vector3FProperty
 {

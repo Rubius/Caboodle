@@ -93,6 +93,9 @@ public:
     SharedPointer(T* p=nullptr) : Super(p) {}
 };
 
+template<class T>
+SharedPointer<T> make_shared(T* ptr) { return SharedPointer<T>(ptr); }
+
 struct CastablePtr;
 struct ConstCastablePtr{
     const void* data;

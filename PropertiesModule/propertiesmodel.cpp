@@ -6,7 +6,7 @@
 
 PropertiesModel::PropertiesModel(QObject* parent)
     : QAbstractItemModel(parent)
-    , _contextIndex(-1)
+    , _contextIndex(PropertiesSystem::Global)
 {
     reset();
 }
