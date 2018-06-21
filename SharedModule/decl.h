@@ -202,8 +202,6 @@ public:
     //if msvc compiler
 #endif
 
-
-
-
+#define FIRST_DECLARE(container) template<class, template<typename> class> class container;
 
 #endif // SHARED_DECL_H

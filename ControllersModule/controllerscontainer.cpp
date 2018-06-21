@@ -8,6 +8,8 @@
 ControllersContainer::ControllersContainer(QObject* parent)
     : QObject(parent)
     , _currentController(nullptr)
+    , _context(nullptr)
+    , _inputKeysModifiers(0)
 {
 
 }
