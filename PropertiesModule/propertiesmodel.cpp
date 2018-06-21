@@ -43,13 +43,13 @@ const QString& PropertiesModel::GetFileName() const
 
 void PropertiesModel::Update()
 {
-    layoutAboutToBeChanged();
+    emit layoutAboutToBeChanged();
 
     const auto& tree = PropertiesSystem::context(_contextIndex);
 
     reset(tree);
 
-    layoutChanged();
+    emit layoutChanged();
 }
 
 void PropertiesModel::forEachItem(QString& path,
