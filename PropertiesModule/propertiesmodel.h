@@ -14,7 +14,7 @@ class PropertiesModel : public QAbstractItemModel
     Q_PROPERTY(QString fileName READ GetFileName WRITE SetFileName NOTIFY fileNameChanged)
 public:
     enum Role {
-        RoleHeaderItem = Qt::UserRole, // TODO. Why header item? Where is it using?
+        RoleHeaderItem = Qt::UserRole, // Using for delegating headers
         RoleMinValue,
         RoleMaxValue,
         RoleDelegateValue,
