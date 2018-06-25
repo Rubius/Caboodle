@@ -29,9 +29,13 @@ void ThreadEventsContainer::ProcessEvents()
 void ThreadEventsContainer::CallEvents()
 {
     while(!_events.empty()) {
-        QMutexLocker locker(&_eventsMutex);
-        _events.front().call();
-        _events.pop();
+        ThreadEvent event;
+        {
+            QMutexLocker locker(&_eventsMutex);
+            event = _events.front();
+            _events.pop();
+        }
+        event.call();
     }
 
     _eventsNotified = true;

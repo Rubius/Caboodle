@@ -277,6 +277,11 @@ public:
         return std::lower_bound(Begin(), End(), value);
     }
 
+    qint32 IndexOf(const T& value) const
+    {
+        return std::distance(begin(), std::find(begin(), end(), value));
+    }
+
     void InsertSortedUnique(const T& value)
     {
         auto it = std::lower_bound(Begin(), End(), value);

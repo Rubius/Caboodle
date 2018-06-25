@@ -11,6 +11,7 @@ class ThreadEvent
 public:
     typedef std::function<void()> FEventHandler;
 
+    ThreadEvent() {}
     ThreadEvent(FEventHandler  handler)
         : _handler(handler)
     {}
