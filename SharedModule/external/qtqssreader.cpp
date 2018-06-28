@@ -50,6 +50,8 @@ QString QtQSSReader::ReadAll() const
             }
             pos += re.matchedLength();
         }
+    } else {
+        qWarning() << file.errorString();
     }
     return result;
 }
