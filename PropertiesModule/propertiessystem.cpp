@@ -1,6 +1,9 @@
 #include "propertiessystem.h"
+
+#include <SharedModule/stack.h>
+#include <SharedModule/threads/threadeventshelper.h>
+
 #include "property.h"
-#include "SharedModule/stack.h"
 
 static StackPointers<QHash<Name, Property*>>& contexts()
 {
@@ -22,24 +25,39 @@ QVariant PropertiesSystem::GetValue(const Name& path)
     return find.value()->getValue();
 }
 
+void PropertiesSystem::Clear()
+{
+    Q_ASSERT(currentType() != Global);
+    for(auto property : context()) {
+        delete property;
+    }
+    context().clear();
+}
+
 PropertiesSystem::FHandle& PropertiesSystem::Begin(Type type)
 {
-    static FHandle res = defaultHandle();
     Q_ASSERT(type >= 0 && type < Max);
+    currentHandle() = defaultHandle();
+    currentType() = type;
 
-    return res;
+    return currentHandle();
+}
+
+void PropertiesSystem::Begin(ThreadEventsContainer* thread, PropertiesSystem::Type type)
+{
+    Begin(type) = [thread](const auto& setter){ thread->Asynch(setter); };
 }
 
 void PropertiesSystem::End()
 {
-    Begin() = defaultHandle();
+    currentHandle() = defaultHandle();
     currentType() = Global;
 }
 
 void PropertiesSystem::addProperty(const Name& path, Property* property) {
 
     Q_ASSERT_X(!context().contains(path), "PropertiesSystem::setValue", path.AsString().toLatin1().constData());
-    property->Handler() = Begin();
+    property->Handler() = currentHandle();
     context().insert(path, property);
 }
 
@@ -56,6 +74,12 @@ QHash<Name, Property*>& PropertiesSystem::context()
 PropertiesSystem::FHandle PropertiesSystem::defaultHandle()
 {
     return [](const FSetter& s){ s(); };
+}
+
+PropertiesSystem::FHandle& PropertiesSystem::currentHandle()
+{
+    static FHandle res = defaultHandle();
+    return res;
 }
 
 PropertiesSystem::Type& PropertiesSystem::currentType()

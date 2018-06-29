@@ -23,6 +23,7 @@ public:
     enum DelegateValue {
         DelegateDefault,
         DelegateFileName,
+        DelegatePositionXYZ,
         DelegateNamedUInt
     };
 
@@ -37,6 +38,7 @@ public:
 
     virtual DelegateValue GetDelegateValue() const { return DelegateDefault; }
     virtual const QVariant* GetDelegateData() const { return nullptr; }
+    virtual void SetDelegateData(const QVariant& value) { SetValue(value); }
 
     void SetReadOnly(bool flag) { _bReadOnly = flag; }
     bool IsReadOnly() const { return _bReadOnly; }

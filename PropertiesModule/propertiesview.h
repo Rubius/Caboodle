@@ -9,6 +9,7 @@
 class PropertiesView : public QTreeView
 {
     Q_OBJECT
+    typedef QTreeView Super;
 public:
     PropertiesView(QWidget* parent=0, Qt::WindowFlags flags=0);
 
@@ -21,14 +22,15 @@ protected:
     void mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 
     void validateActionsVisiblity();
+
 private Q_SLOTS:
     void on_OpenWithTextEditor_triggered();
 
-private:
-    typedef QTreeView Super;
+protected:
     class PropertiesModel* _propertiesModel;
-    QModelIndex _indexUnderCursor;
 
+private:
+    QModelIndex _indexUnderCursor;
     QAction* _actionOpenWithTextEditor;
 };
 

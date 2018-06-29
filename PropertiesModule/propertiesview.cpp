@@ -15,26 +15,8 @@
 #include "PropertiesModule/propertiessystem.h"
 #include "propertiesmodel.h"
 #include "SharedGuiModule/decl.h"
-
-class OnEditorValueChangedListener : public QObject
-{
-    Q_OBJECT
-    QWidget* editor;
-    QModelIndex model_index;
-    const QStyledItemDelegate* delegate;
-public:
-    OnEditorValueChangedListener(QWidget* editor, const QModelIndex& model_index, const QStyledItemDelegate* delegate)
-        : QObject(editor)
-        , editor(editor)
-        , model_index(model_index)
-        , delegate(delegate)
-    {}
-
-public Q_SLOTS:
-    void onEditorValueChanged() {
-        delegate->setModelData(editor, const_cast<QAbstractItemModel*>(model_index.model()), model_index);
-    }
-};
+#include "widgets/propertiesdelegateeditorsfactory.h"
+#include "widgets/propertiesstyleddelegatelistener.h"
 
 class PropertiesDelegate : public QStyledItemDelegate
 {
@@ -83,14 +65,9 @@ public:
 
     QWidget*createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const Q_DECL_OVERRIDE {
         QVariant data = index.data(Qt::EditRole);
-        QVariant delegateValue = index.data(PropertiesModel::RoleDelegateValue);
 
-        if(delegateValue.toInt() == Property::DelegateNamedUInt) {
-            QVariant delegateData = index.data(PropertiesModel::RoleDelegateData);
-            QComboBox* result = new QComboBox(parent);
-            result->addItems(delegateData.toStringList());
-            result->setCurrentIndex(data.toUInt());
-            return result;
+        if(auto editor = PropertiesDelegateEditorsFactory::Instance().createEditor(parent, option, index)) {
+            return editor;
         }
 
         switch (data.type()) {
@@ -119,30 +96,31 @@ public:
 
     // QAbstractItemDelegate interface
 public:
-    void setEditorData(QWidget* editor, const QModelIndex& index) const Q_DECL_OVERRIDE {
-        Super::setEditorData(editor, index);
-        if(auto e = qobject_cast<QComboBox*>(editor)) {
-            auto listener = new OnEditorValueChangedListener(e,index,this);
-            connect(e, SIGNAL(currentIndexChanged(int)), listener, SLOT(onEditorValueChanged()));
+    void setEditorData(QWidget* editor, const QModelIndex& index) const Q_DECL_OVERRIDE
+    {
+        if(PropertiesDelegateEditorsFactory::Instance().setEditorData(editor, index, this)) {
+            return;
         }
-        else if(auto e = qobject_cast<QSpinBox*>(editor)) {
-            auto listener = new OnEditorValueChangedListener(e,index,this);
+
+        Super::setEditorData(editor, index);
+        if(auto e = qobject_cast<QSpinBox*>(editor)) {
+            auto listener = new PropertiesStyledDelegateListener(e,index,this);
             connect(e, SIGNAL(valueChanged(int)), listener, SLOT(onEditorValueChanged()));
         }
         else if(auto e = qobject_cast<QDoubleSpinBox*>(editor)) {
-            auto listener = new OnEditorValueChangedListener(e,index,this);
+            auto listener = new PropertiesStyledDelegateListener(e,index,this);
             connect(e, SIGNAL(valueChanged(double)), listener, SLOT(onEditorValueChanged()));
         }
     }
 
     virtual void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const Q_DECL_OVERRIDE
     {
-        if(auto e = qobject_cast<QComboBox*>(editor)) {
-            model->setData(index, e->currentIndex());
-        } else {
-            Super::setModelData(editor, model, index);
+        if(PropertiesDelegateEditorsFactory::Instance().setModelData(editor, model, index)) {
+            return;
         }
+        Super::setModelData(editor, model, index);
     }
+
 };
 
 static const StringProperty& textEditor(const char* path = nullptr, const char* value = nullptr)
@@ -239,7 +217,5 @@ void PropertiesView::on_OpenWithTextEditor_triggered()
 
     log.Warning() << "Opening" << textEditor() << arguments;
 }
-
-#include "propertiesview.moc"
 
 #endif

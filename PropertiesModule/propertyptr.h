@@ -13,6 +13,7 @@ public:
     operator const T&() const { return *_value; }
     operator T&() { return *_value; }
 protected:
+    typedef TPropertyPtrBase<T> Super;
     T* _value;
 };
 
