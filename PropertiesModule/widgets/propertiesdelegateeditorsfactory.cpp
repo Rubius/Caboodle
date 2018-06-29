@@ -70,8 +70,7 @@ bool PropertiesDelegateEditorsFactory::setEditorData(QWidget* editor, const QMod
     default:
         break;
     }
-
-
+    return false;
 }
 
 PropertiesDelegateEditorsFactory*&PropertiesDelegateEditorsFactory::currentFactory()
