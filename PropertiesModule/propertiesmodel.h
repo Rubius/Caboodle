@@ -27,13 +27,13 @@ Q_SIGNALS:
     void contextIndexChanged();
 
 public:
+    void Change(const std::function<void ()>& handle);
+
     Q_SLOT void SetContextIndex(qint32 contextIndex);
     qint32 GetContextIndex() const;
 
     Q_SLOT void SetFileName(const QString& fileName);
     const QString& GetFileName() const;
-
-    Q_SLOT void Update();
 
     Q_SLOT void Save(const QString& fileName) const;
     Q_SLOT void Load(const QString& fileName);
@@ -51,6 +51,10 @@ public:
     int columnCount(const QModelIndex& parent) const Q_DECL_OVERRIDE;
 
     QHash<int, QByteArray> roleNames() const;
+
+private:
+    Q_SLOT void update();
+
 private:
     struct Item {
         QString Name;

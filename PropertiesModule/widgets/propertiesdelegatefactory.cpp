@@ -1,4 +1,4 @@
-#include "propertiesdelegateeditorsfactory.h"
+#include "propertiesdelegatefactory.h"
 
 #include <QComboBox>
 #include <QModelIndex>
@@ -7,23 +7,23 @@
 #include "PropertiesModule/property.h"
 #include "propertiesstyleddelegatelistener.h"
 
-PropertiesDelegateEditorsFactory::PropertiesDelegateEditorsFactory()
+PropertiesDelegateFactory::PropertiesDelegateFactory()
 {
 
 }
 
-void PropertiesDelegateEditorsFactory::SetFactory(PropertiesDelegateEditorsFactory* factory)
+void PropertiesDelegateFactory::SetFactory(PropertiesDelegateFactory* factory)
 {
     delete currentFactory();
     currentFactory() = factory;
 }
 
-const PropertiesDelegateEditorsFactory&PropertiesDelegateEditorsFactory::Instance()
+const PropertiesDelegateFactory&PropertiesDelegateFactory::Instance()
 {
     return *currentFactory();
 }
 
-QWidget*PropertiesDelegateEditorsFactory::createEditor(QWidget* parent, const QStyleOptionViewItem&, const QModelIndex& index) const
+QWidget*PropertiesDelegateFactory::CreateEditor(QWidget* parent, const QStyleOptionViewItem&, const QModelIndex& index) const
 {
     QVariant delegateData = index.data(PropertiesModel::RoleDelegateData);
     QVariant delegateValue = index.data(PropertiesModel::RoleDelegateValue);
@@ -43,7 +43,7 @@ QWidget*PropertiesDelegateEditorsFactory::createEditor(QWidget* parent, const QS
     return nullptr;
 }
 
-bool PropertiesDelegateEditorsFactory::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
+bool PropertiesDelegateFactory::SetModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
 {
     switch (index.data(PropertiesModel::RoleDelegateValue).toInt()) {
     case Property::DelegateNamedUInt:
@@ -57,7 +57,7 @@ bool PropertiesDelegateEditorsFactory::setModelData(QWidget* editor, QAbstractIt
     return false;
 }
 
-bool PropertiesDelegateEditorsFactory::setEditorData(QWidget* editor, const QModelIndex& index, const QStyledItemDelegate* delegate) const
+bool PropertiesDelegateFactory::SetEditorData(QWidget* editor, const QModelIndex& index, const QStyledItemDelegate* delegate) const
 {
     switch (index.data(PropertiesModel::RoleDelegateValue).toInt()) {
     case Property::DelegateNamedUInt:
@@ -73,8 +73,13 @@ bool PropertiesDelegateEditorsFactory::setEditorData(QWidget* editor, const QMod
     return false;
 }
 
-PropertiesDelegateEditorsFactory*&PropertiesDelegateEditorsFactory::currentFactory()
+bool PropertiesDelegateFactory::DisplayText(QString&, const QVariant&, const QLocale&) const
 {
-    static PropertiesDelegateEditorsFactory* currentFactory = new PropertiesDelegateEditorsFactory();
+    return false;
+}
+
+PropertiesDelegateFactory*&PropertiesDelegateFactory::currentFactory()
+{
+    static PropertiesDelegateFactory* currentFactory = new PropertiesDelegateFactory();
     return currentFactory;
 }

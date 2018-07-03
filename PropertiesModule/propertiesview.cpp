@@ -15,7 +15,7 @@
 #include "PropertiesModule/propertiessystem.h"
 #include "propertiesmodel.h"
 #include "SharedGuiModule/decl.h"
-#include "widgets/propertiesdelegateeditorsfactory.h"
+#include "widgets/propertiesdelegatefactory.h"
 #include "widgets/propertiesstyleddelegatelistener.h"
 
 class PropertiesDelegate : public QStyledItemDelegate
@@ -66,7 +66,7 @@ public:
     QWidget*createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const Q_DECL_OVERRIDE {
         QVariant data = index.data(Qt::EditRole);
 
-        if(auto editor = PropertiesDelegateEditorsFactory::Instance().createEditor(parent, option, index)) {
+        if(auto editor = PropertiesDelegateFactory::Instance().CreateEditor(parent, option, index)) {
             return editor;
         }
 
@@ -86,6 +86,9 @@ public:
             result->setValue(data.toDouble());
             result->setMinimum(index.data(PropertiesModel::RoleMinValue).toDouble());
             result->setMaximum(index.data(PropertiesModel::RoleMaxValue).toDouble());
+            auto singleStep = (result->maximum() - result->minimum()) / 100.0;
+            singleStep = (singleStep > 1.0) ? 1.0 : singleStep;
+            result->setSingleStep(singleStep);
             result->setFocusPolicy(Qt::StrongFocus);
             return result;
         }
@@ -98,7 +101,7 @@ public:
 public:
     void setEditorData(QWidget* editor, const QModelIndex& index) const Q_DECL_OVERRIDE
     {
-        if(PropertiesDelegateEditorsFactory::Instance().setEditorData(editor, index, this)) {
+        if(PropertiesDelegateFactory::Instance().SetEditorData(editor, index, this)) {
             return;
         }
 
@@ -115,12 +118,20 @@ public:
 
     virtual void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const Q_DECL_OVERRIDE
     {
-        if(PropertiesDelegateEditorsFactory::Instance().setModelData(editor, model, index)) {
+        if(PropertiesDelegateFactory::Instance().SetModelData(editor, model, index)) {
             return;
         }
         Super::setModelData(editor, model, index);
     }
 
+    virtual QString displayText(const QVariant& value, const QLocale& locale) const Q_DECL_OVERRIDE
+    {
+        QString result;
+        if(PropertiesDelegateFactory::Instance().DisplayText(result, value, locale)) {
+            return result;
+        }
+        return Super::displayText(value, locale);
+    }
 };
 
 static const StringProperty& textEditor(const char* path = nullptr, const char* value = nullptr)
@@ -179,7 +190,7 @@ void PropertiesView::Load(const QString& fileName)
 void PropertiesView::showEvent(QShowEvent*)
 {
     if(!model()->rowCount()) {
-        _propertiesModel->Update();
+        _propertiesModel->Change([]{});
     }
 }
 

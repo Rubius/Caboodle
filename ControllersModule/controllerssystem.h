@@ -11,6 +11,10 @@ class ControllersSystem
     ControllersSystem();
 public:    
     static ControllerBase* GetController(const Name& name);
+    template<class T>
+    static T* GetController(const Name &name) {
+        return (T*)GetController(name);
+    }
 
 private:
     friend class ControllerBase;

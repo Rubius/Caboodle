@@ -11,12 +11,25 @@ PropertiesModel::PropertiesModel(QObject* parent)
     reset();
 }
 
+void PropertiesModel::Change(const std::function<void ()>& handle)
+{
+    beginResetModel();
+
+    handle();
+
+    const auto& tree = PropertiesSystem::context(_contextIndex);
+
+    reset(tree);
+
+    endResetModel();
+}
+
 void PropertiesModel::SetContextIndex(qint32 contextIndex)
 {
     if(_contextIndex != contextIndex) {
         _contextIndex = contextIndex;
 
-        Update();
+        update();
 
         emit contextIndexChanged();
     }
@@ -41,15 +54,15 @@ const QString& PropertiesModel::GetFileName() const
     return _fileName;
 }
 
-void PropertiesModel::Update()
+void PropertiesModel::update()
 {
-    emit layoutAboutToBeChanged();
+    beginResetModel();
 
     const auto& tree = PropertiesSystem::context(_contextIndex);
 
     reset(tree);
 
-    emit layoutChanged();
+    endResetModel();
 }
 
 void PropertiesModel::forEachItem(QString& path,
@@ -190,7 +203,8 @@ QVariant PropertiesModel::data(const QModelIndex& index, int role) const
         if(index.column()) {
             auto property = asItem(index)->Prop;
             if(property) {
-                return *property->GetDelegateData();
+                auto delegateData = property->GetDelegateData();
+                return (delegateData != nullptr) ? *delegateData : QVariant();
             }
         }
         return QVariant();

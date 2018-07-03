@@ -20,6 +20,7 @@ public:
 
     static void SetValue(const Name& path, const QVariant& value);
     static QVariant GetValue(const Name& path);
+    static QVariant GetValue(const Name& path, qint32 type);
 
     // clear current context
     static void Clear();

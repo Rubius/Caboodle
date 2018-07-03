@@ -2,6 +2,8 @@
 #define PROPERTYPTR_H
 #include "property.h"
 
+// TODO. This class is now marked as deprecated, and will be deleted soon, use ExternalProperties instead
+
 template<class T>
 class TPropertyPtrBase : public Property
 {

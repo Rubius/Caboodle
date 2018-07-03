@@ -25,6 +25,13 @@ QVariant PropertiesSystem::GetValue(const Name& path)
     return find.value()->getValue();
 }
 
+QVariant PropertiesSystem::GetValue(const Name& path, qint32 type)
+{
+    auto find = contexts()[type]->find(path);
+    Q_ASSERT_X(find != contexts()[type]->end(), "PropertiesSystem::getValue", path.AsString().toLatin1().constData());
+    return find.value()->getValue();
+}
+
 void PropertiesSystem::Clear()
 {
     Q_ASSERT(currentType() != Global);

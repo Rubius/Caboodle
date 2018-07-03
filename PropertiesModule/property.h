@@ -9,22 +9,20 @@
 
 
 class Property {
-protected:
+public:
     typedef std::function<void ()> FSetter;
     typedef std::function<void (const FSetter&)> FHandle;
     typedef std::function<void ()> FOnChange;
     typedef std::function<void (const QVariant& property, QVariant& new_value)> FValidator;
 
-    FHandle _fHandle;
-    FOnChange _fOnset;
-    FValidator _fValidator;
-    bool _bReadOnly;
 public:
     enum DelegateValue {
         DelegateDefault,
         DelegateFileName,
         DelegatePositionXYZ,
-        DelegateNamedUInt
+        DelegateNamedUInt,
+
+        DelegateUser
     };
 
     Property(const QString& path);
@@ -44,17 +42,54 @@ public:
     bool IsReadOnly() const { return _bReadOnly; }
     virtual QVariant GetMin() const { return 0; }
     virtual QVariant GetMax() const { return 0; }
+
 protected:
     friend class PropertiesSystem;
     friend class PropertiesModel;
 
     virtual QVariant getValue() const=0;
     virtual void setValueInternal(const QVariant&)=0;
+
+protected:
+    FHandle _fHandle;
+    FOnChange _fOnset;
+    FValidator _fValidator;
+    bool _bReadOnly;
+};
+
+template<class T>
+class TExternalProperty : public Property
+{
+    typedef std::function<T ()> FGetter;
+    typedef std::function<void (T value, T oldValue)> FSetter;
+public:
+    TExternalProperty(const QString& path,const FGetter& getter, const FSetter& setter, const T& min, const T& max)
+        : Property(path)
+        , _getter(getter)
+        , _setter(setter)
+        , _min(min)
+        , _max(max)
+    {}
+
+    virtual QVariant GetMin() const { return _min; }
+    virtual QVariant GetMax() const { return _max; }
+
+    // Property interface
+protected:
+    virtual QVariant getValue() const Q_DECL_OVERRIDE { return _getter(); }
+    virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _setter(value.toDouble(), _getter()); }
+
+private:
+    FGetter _getter;
+    FSetter _setter;
+    T _min;
+    T _max;
 };
 
 template<class T>
 class TPropertyBase : public Property
 {
+    typedef TPropertyBase Super;
 public:
     TPropertyBase(const QString& path, const T& initial)
         : Property(path)
@@ -150,6 +185,7 @@ private:
     QVariant _names;
 };
 
+// Internals
 typedef TProperty<bool> BoolProperty;
 typedef TProperty<double> DoubleProperty;
 typedef TProperty<float> FloatProperty;
@@ -158,6 +194,12 @@ typedef TProperty<quint32> UIntProperty;
 typedef TProperty<QString> StringProperty;
 typedef TProperty<QUrl> UrlProperty;
 
+// Externals
+typedef TExternalProperty<bool> ExternalBoolProperty;
+typedef TExternalProperty<double> ExternalDoubleProperty;
+typedef TExternalProperty<float> ExternalFloatProperty;
+typedef TExternalProperty<qint32> ExternalIntProperty;
+typedef TExternalProperty<quint32> ExternalUIntProperty;
 
 class Vector3FProperty
 {
