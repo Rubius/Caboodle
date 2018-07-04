@@ -15,7 +15,7 @@ struct DescProccesValueState
 
 class ProcessValue
 {
-    typedef std::function<bool (ProcessValue*)> FCallback;
+    typedef std::function<void (ProcessValue*)> FCallback;
     ProcessValue(const FCallback& callback);
 
     static std::atomic_int& depthCounter();
@@ -23,19 +23,20 @@ class ProcessValue
 public:
     virtual ~ProcessValue();
 
-    DescProccesValueState GetState() const { return { GetTitle(), GetDepth(), IsCanceled(), IsSwaping() }; }
+    DescProccesValueState GetState() const { return { GetTitle(), GetDepth(), IsFinished(), IsNextProcessExpected() }; }
     qint32 GetDepth() const { return _valueDepth; }
     const QString& GetTitle() const { return _title; }
     bool IsCanceled() const { return _isCanceled; }
-    bool IsSwaping() const { return _isNextProcessExpected; }
+    bool IsNextProcessExpected() const { return _isNextProcessExpected; }
+    bool IsFinished() const { return _isFinished; }
     virtual class ProcessDeterminateValue* AsDeterminate() { return nullptr; }
 
 protected:
     void setTitle(const QString& title);
-    void cancel();
+    void finish();
     void setNextProcessExpected();
 
-    virtual bool step();
+    virtual void incrementStep();
     void init(const QString& title);
 
 private:
@@ -47,6 +48,7 @@ private:
     QString _title;
     bool _isNextProcessExpected;
     bool _isCanceled;
+    bool _isFinished;
 };
 
 struct DescProcessDeterminateValueState : DescProccesValueState
@@ -63,13 +65,13 @@ class ProcessDeterminateValue : public ProcessValue
 public:
     ~ProcessDeterminateValue();
 
-    DescProcessDeterminateValueState GetState() const { return { GetTitle(), GetDepth(), IsCanceled(), IsSwaping(), GetCurrentStep(), GetStepsCount() }; }
+    DescProcessDeterminateValueState GetState() const { return { GetTitle(), GetDepth(), IsFinished(), IsNextProcessExpected(), GetCurrentStep(), GetStepsCount() }; }
     qint32 GetCurrentStep() const { return _currentStep; }
     qint32 GetStepsCount() const { return _stepsCount; }
     virtual ProcessDeterminateValue* AsDeterminate() Q_DECL_OVERRIDE{ return this; }
 
 private:
-    virtual bool step() Q_DECL_OVERRIDE;
+    virtual void incrementStep() Q_DECL_OVERRIDE;
 
     friend class ProcessBase;
     void init(const QString& title, qint32 stepsCount);

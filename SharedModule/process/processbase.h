@@ -1,7 +1,7 @@
 #ifndef PROCCESSBASE_H
 #define PROCCESSBASE_H
 
-#include "SharedModule/internal.hpp"
+#include "SharedModule/decl.h"
 
 class ProcessValue;
 
@@ -18,7 +18,8 @@ protected:
     void beginProcess(const QString& title, qint32 stepsCount);
     void setProcessTitle(const QString& title);
     void increaseProcessStepsCount(qint32 stepsCount);
-    bool stepProcess();
+    void incrementProcess();
+    bool isProcessCanceled() const;
 
     virtual void run();
 

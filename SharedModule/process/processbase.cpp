@@ -47,9 +47,14 @@ void ProcessBase::increaseProcessStepsCount(qint32 stepsCount)
     }
 }
 
-bool ProcessBase::stepProcess()
+void ProcessBase::incrementProcess()
 {
-    return _processValue->step();
+    _processValue->incrementStep();
+}
+
+bool ProcessBase::isProcessCanceled() const
+{
+    return _processValue->IsCanceled();
 }
 
 void ProcessBase::run()

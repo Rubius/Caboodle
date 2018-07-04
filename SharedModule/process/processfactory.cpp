@@ -4,6 +4,7 @@ ProcessValue::ProcessValue(const FCallback& callback)
     : _valueDepth(depthCounter()++)
     , _callback(callback)
     , _isCanceled(false)
+    , _isFinished(false)
     , _isNextProcessExpected(false)
 {
 
@@ -17,11 +18,9 @@ std::atomic_int& ProcessValue::depthCounter()
 
 ProcessValue::~ProcessValue()
 {
-    cancel();
+    finish();
     --depthCounter();
 }
-
-
 
 void ProcessValue::setTitle(const QString& title)
 {
@@ -29,10 +28,10 @@ void ProcessValue::setTitle(const QString& title)
     _callback(this);
 }
 
-void ProcessValue::cancel()
+void ProcessValue::finish()
 {
-    if(!_isCanceled) {
-        _isCanceled = true;
+    if(!_isFinished) {
+        _isFinished = true;
         _callback(this);
     }
 }
@@ -42,9 +41,9 @@ void ProcessValue::setNextProcessExpected()
     _isNextProcessExpected = true;
 }
 
-bool ProcessValue::step()
+void ProcessValue::incrementStep()
 {
-    return _callback(this);
+    _callback(this);
 }
 
 void ProcessValue::init(const QString& title)
@@ -55,13 +54,13 @@ void ProcessValue::init(const QString& title)
 
 ProcessDeterminateValue::~ProcessDeterminateValue()
 {
-    cancel();
+    finish();
 }
 
-bool ProcessDeterminateValue::step()
+void ProcessDeterminateValue::incrementStep()
 {
     _currentStep++;
-    return Super::step();
+    Super::incrementStep();
 }
 
 void ProcessDeterminateValue::init(const QString& title, qint32 stepsCount)
@@ -74,7 +73,7 @@ void ProcessDeterminateValue::init(const QString& title, qint32 stepsCount)
 void ProcessDeterminateValue::increaseStepsCount(qint32 value)
 {
     _stepsCount += value;
-    (void)Super::step();
+    (void)Super::incrementStep();
 }
 
 static bool DoNothingCallback(ProcessValue*) { return true; }
