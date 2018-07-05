@@ -11,11 +11,41 @@ static StackPointers<QHash<Name, Property*>>& contexts()
     return res;
 }
 
+static QHash<Name, QVector<Property::FOnChange>>& delayedSubscribes()
+{
+    static QHash<Name, QVector<Property::FOnChange>> res;
+    return res;
+}
+
+void PropertiesSystem::SetValueForceInvoke(const Name& path, const QVariant& value)
+{
+    auto find = context().find(path);
+    Q_ASSERT_X(find != context().end(), "PropertiesSystem::setValue", path.AsString().toLatin1().constData());
+    if(!find.value()->SetValue(value)) {
+        find.value()->Invoke();
+    }
+}
+
 void PropertiesSystem::SetValue(const Name& path, const QVariant& value)
 {
     auto find = context().find(path);
     Q_ASSERT_X(find != context().end(), "PropertiesSystem::setValue", path.AsString().toLatin1().constData());
     find.value()->SetValue(value);
+}
+
+void PropertiesSystem::Subscribe(const Name& path, const PropertiesSystem::FOnChange& function)
+{
+    auto find = context().find(path);
+    if(find == context().end()) {
+        auto delayedSubscribesFind = delayedSubscribes().find(path);
+        if(delayedSubscribesFind != delayedSubscribes().end()) {
+            delayedSubscribesFind.value().append(function);
+        } else {
+            delayedSubscribes().insert(path, {function});
+        }
+    } else {
+        find.value()->Subscribe(function);
+    }
 }
 
 QVariant PropertiesSystem::GetValue(const Name& path)
@@ -66,6 +96,16 @@ void PropertiesSystem::addProperty(const Name& path, Property* property) {
     Q_ASSERT_X(!context().contains(path), "PropertiesSystem::setValue", path.AsString().toLatin1().constData());
     property->Handler() = currentHandle();
     context().insert(path, property);
+    auto findSubscribes = delayedSubscribes().find(path);
+    if(findSubscribes != delayedSubscribes().end()) {
+        auto subscribes = findSubscribes.value();
+        property->Subscribe([subscribes]{
+            for(auto subscribe : subscribes) {
+                subscribe();
+            }
+        });
+        delayedSubscribes().remove(path);
+    }
 }
 
 QHash<Name, Property*>& PropertiesSystem::context(quint8 contextIndex)

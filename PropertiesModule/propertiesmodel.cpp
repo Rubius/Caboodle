@@ -93,6 +93,9 @@ void PropertiesModel::reset(const QHash<Name, Property*>& tree)
     qint32 row=0;
 
     for(auto it(tree.begin()), e(tree.end()); it != e; it++, row++) {
+        if(!it.value()->GetOptions().TestFlag(Property::Option_IsPresentable)){
+            continue;
+        }
         const Name& path = it.key();
         Item* current = _root.data();
         QStringList paths = path.AsString().split('/', QString::SkipEmptyParts);
@@ -126,7 +129,9 @@ void PropertiesModel::Save(const QString& fileName) const
 
     QString path;
     forEachItem(path, _root.data(), [&settings](const QString& path, const Item* item) {
-        settings.setValue(path + item->Name, item->Prop->getValue());
+        if(item->Prop->GetOptions().TestFlag(Property::Option_IsExportable)) {
+            settings.setValue(path + item->Name, item->Prop->getValue());
+        }
     });
 }
 
@@ -146,7 +151,9 @@ void PropertiesModel::Load(const QString& fileName)
         if(find == tree.end()) {
             log.Warning() << "unknown property" << key;
         } else {
-            find.value()->SetValue(settings.value(key));
+            if(find.value()->GetOptions().TestFlag(Property::Option_IsExportable)) {
+                find.value()->SetValue(settings.value(key));
+            }
         }
     }
 
@@ -288,7 +295,7 @@ Qt::ItemFlags PropertiesModel::flags(const QModelIndex& index) const
 {
     if(index.column()) {
         if(auto property = asItem(index)->Prop) {
-            if(!property->IsReadOnly()) {
+            if(!property->GetOptions().TestFlag(Property::Option_IsReadOnly)) {
                 return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
             }
         }

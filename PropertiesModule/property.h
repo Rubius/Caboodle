@@ -4,6 +4,8 @@
 #include <QUrl>
 #include <functional>
 
+#include <SharedModule/flags.h>
+#include <SharedModule/name.h>
 #include <SharedModule/decl.h>
 #include <SharedGuiModule/decl.h> // Vector3f
 
@@ -16,6 +18,16 @@ public:
     typedef std::function<void (const QVariant& property, QVariant& new_value)> FValidator;
 
 public:
+    enum Option {
+        Option_IsExportable = 0x1,// if property should be saved or loaded from file
+        Option_IsPresentable = 0x2,// if property should be presented in properties model
+        Option_IsReadOnly = 0x4,
+
+        Options_Default = Option_IsExportable | Option_IsPresentable,
+        Options_Internal = 0
+    };
+    DECL_FLAGS(Options, Option)
+
     enum DelegateValue {
         DelegateDefault,
         DelegateFileName,
@@ -25,21 +37,23 @@ public:
         DelegateUser
     };
 
-    Property(const QString& path);
-    void SetValue(QVariant value);
+    Property(const Name& path);
+    bool SetValue(QVariant value);
+    const Options& GetOptions() const { return _options; }
+    Options& ChangeOptions() { return _options; }
 
     FHandle& Handler() { return _fHandle; }
     FValidator& Validator() { return _fValidator; }
-    FOnChange& OnChange() { return _fOnset; }
+    FOnChange& OnChange();
 
-    void Invoke() { _fHandle([]{}); }
+    void Subscribe(const FOnChange& onChange);
+
+    void Invoke() { _fOnChange(); }
 
     virtual DelegateValue GetDelegateValue() const { return DelegateDefault; }
     virtual const QVariant* GetDelegateData() const { return nullptr; }
     virtual void SetDelegateData(const QVariant& value) { SetValue(value); }
 
-    void SetReadOnly(bool flag) { _bReadOnly = flag; }
-    bool IsReadOnly() const { return _bReadOnly; }
     virtual QVariant GetMin() const { return 0; }
     virtual QVariant GetMax() const { return 0; }
 
@@ -52,9 +66,12 @@ protected:
 
 protected:
     FHandle _fHandle;
-    FOnChange _fOnset;
+    FOnChange _fOnChange;
     FValidator _fValidator;
-    bool _bReadOnly;
+    Options _options;
+#ifdef DEBUG_BUILD
+    bool _isSubscribed;
+#endif
 };
 
 template<class T>
@@ -63,7 +80,7 @@ class TExternalProperty : public Property
     typedef std::function<T ()> FGetter;
     typedef std::function<void (T value, T oldValue)> FSetter;
 public:
-    TExternalProperty(const QString& path,const FGetter& getter, const FSetter& setter, const T& min, const T& max)
+    TExternalProperty(const Name& path,const FGetter& getter, const FSetter& setter, const T& min, const T& max)
         : Property(path)
         , _getter(getter)
         , _setter(setter)
@@ -91,15 +108,15 @@ class TPropertyBase : public Property
 {
     typedef TPropertyBase Super;
 public:
-    TPropertyBase(const QString& path, const T& initial)
+    typedef T value_type;
+    TPropertyBase(const Name& path, const T& initial)
         : Property(path)
         , _value(initial)
     {}
 
-    T& native() { return _value; }
-    T* ptr() { return &_value; }
+    const T& Native() const { return _value; }
+    const T* Ptr() const { return &_value; }
     operator const T&() const { return _value; }
-    operator T&() { return _value; }
 
 protected:
     virtual QVariant getValue() const Q_DECL_OVERRIDE { return _value; }
@@ -111,7 +128,7 @@ template<class T>
 class TProperty : public TPropertyBase<T>
 {
 public:
-    TProperty(const QString& path, const T& initial, const T& min, const T& max)
+    TProperty(const Name& path, const T& initial, const T& min, const T& max)
         : TPropertyBase<T>(path, initial)
         , _min(min)
         , _max(max)
@@ -129,7 +146,7 @@ template<>
 class TProperty<bool> : public TPropertyBase<bool>
 {
 public:
-    TProperty<bool>(const QString& path, bool initial)
+    TProperty<bool>(const Name& path, bool initial)
         : TPropertyBase<bool>(path, initial)
     {}
 
@@ -142,7 +159,7 @@ template<>
 class TProperty<QString> : public TPropertyBase<QString>
 {
 public:
-    TProperty<QString>(const QString& path, const QString& initial)
+    TProperty<QString>(const Name& path, const QString& initial)
         : TPropertyBase<QString>(path, initial)
     {}
 protected:
@@ -152,7 +169,7 @@ protected:
 class TextFileNameProperty : public TProperty<QString>
 {
 public:
-    TextFileNameProperty(const QString& path, const QString& initial)
+    TextFileNameProperty(const Name& path, const QString& initial)
         : TProperty<QString>(path, initial)
     {}
     virtual DelegateValue GetDelegateValue() const Q_DECL_OVERRIDE { return DelegateFileName; }
@@ -162,7 +179,7 @@ template<>
 class TProperty<QUrl> : public TPropertyBase<QUrl>
 {
 public:
-    TProperty<QUrl>(const QString& path, const QUrl& initial)
+    TProperty<QUrl>(const Name& path, const QUrl& initial)
         : TPropertyBase<QUrl>(path, initial)
     {}
 protected:
@@ -173,7 +190,7 @@ class NamedUIntProperty : public TProperty<quint32>
 {
     typedef TProperty<quint32> Super;
 public:
-    NamedUIntProperty(const QString& path, const quint32& initial)
+    NamedUIntProperty(const Name& path, const quint32& initial)
         : Super(path, initial, 0, 0)
     {}
 
@@ -208,7 +225,7 @@ public:
     FloatProperty Y;
     FloatProperty Z;
 
-    Vector3FProperty(const QString& path, const Vector3F& vector);
+    Vector3FProperty(const Name& path, const Vector3F& vector);
 };
 
 #endif // PROPERTY_H

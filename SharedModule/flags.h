@@ -22,16 +22,16 @@ public:
     {}
 
 
-    void SetValue(qint32 value)
+    void SetFlags(qint32 value)
     {
         _value = value;
     }
 
-    void SetFlags(qint32 flags)
+    void AddFlags(qint32 flags)
     {
         _value |= flags;
     }
-    void UnsetFlags(qint32 flags)
+    void RemoveFlags(qint32 flags)
     {
         _value &= ~flags;
     }
@@ -63,7 +63,7 @@ public:
 
     void ChangeFromBoolean(qint32 flags, bool flag)
     {
-        flag ? SetFlags(flags) : UnsetFlags(flags);
+        flag ? AddFlags(flags) : RemoveFlags(flags);
     }
 
     Flags& operator |=(const Flags other)

@@ -4,6 +4,7 @@
 #if defined __cplusplus
 #include "array.h"
 #include "stack.h"
+#include "process/qprocessbase.h"
 #include "process/processbase.h"
 #include "threads/threadcomputingbase.h"
 #include "threads/threadeventshelper.h"

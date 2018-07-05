@@ -189,6 +189,10 @@ public:
     QDebug Info() const;
 };
 
+#ifndef QT_NO_DEBUG
+#define DEBUG_BUILD
+#endif
+
 #define tDebug \
     (qDebug().nospace() << "   Loc: [" << __FILE__ << ":" << __LINE__ << "] ").space() << QString::asprintf
 

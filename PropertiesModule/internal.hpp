@@ -1,9 +1,9 @@
-#ifndef INTERNAL_HPP
-#define INTERNAL_HPP
+#ifndef PROPERTIES_INTERNAL_HPP
+#define PROPERTIES_INTERNAL_HPP
 
 #ifdef __cplusplus
 #include "property.h"
-#include "propertyptr.h"
+#include "propertypromise.h"
 #include "propertiesvalidators.h"
 #include "propertiessystem.h"
 #endif

@@ -7,6 +7,8 @@
 
 class Property;
 class Name;
+class StateProperty;
+template<class T> class PropertyPromise;
 
 class PropertiesSystem
 {
@@ -17,16 +19,23 @@ public:
     };
     typedef std::function<void ()> FSetter;
     typedef std::function<void (const FSetter&)> FHandle;
+    typedef FSetter FOnChange;
 
+    static void SetValueForceInvoke(const Name &path, const QVariant &value);
     static void SetValue(const Name& path, const QVariant& value);
+    static void Subscribe(const Name& path, const FOnChange& function);
     static QVariant GetValue(const Name& path);
     static QVariant GetValue(const Name& path, qint32 type);
+    template<class T>
+    static PropertyPromise<T> GetProperty(const Name& path, qint32 type = Global);
+    template<class T>
+    static PropertyPromise<T> GetProperty(const Name& path, const FOnChange& onChange, qint32 type = Global);
 
     // clear current context
     static void Clear();
 
     // begin current context. Global <= type < Max
-    // return FHandle reference. It is property setter by default it just call set()
+    // return FHandle reference. It is property setter by default it just call SetValue()
     // every property created between Begin - End uses setted handle
     // change it for example for thread safety.
     // Example:
@@ -41,6 +50,7 @@ public:
 private:
     friend class Property;
     friend class PropertiesModel;
+    template<class T> friend class PropertyPromise;
 
     PropertiesSystem();
     Q_DISABLE_COPY(PropertiesSystem)
