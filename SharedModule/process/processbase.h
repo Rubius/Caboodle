@@ -1,7 +1,7 @@
 #ifndef PROCCESSBASE_H
 #define PROCCESSBASE_H
 
-#include "SharedModule/decl.h"
+#include <memory>
 
 class ProcessValue;
 
@@ -14,17 +14,18 @@ protected:
     ProcessBase();
     ~ProcessBase();
 
-    void beginProcess(const QString& title);
-    void beginProcess(const QString& title, qint32 stepsCount);
-    void setProcessTitle(const QString& title);
-    void increaseProcessStepsCount(qint32 stepsCount);
+    void beginProcess(const wchar_t* title);
+    void beginProcess(const wchar_t* title, int stepsCount);
+    void setProcessTitle(const wchar_t* title);
+    void increaseProcessStepsCount(int stepsCount);
     void incrementProcess();
     bool isProcessCanceled() const;
 
     virtual void run();
 
 private:
-    ScopedPointer<ProcessValue> _processValue;
+    std::unique_ptr<ProcessValue> _processValue;
 };
+
 
 #endif // PROCCESSBASE_H

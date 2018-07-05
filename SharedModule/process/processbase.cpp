@@ -14,33 +14,33 @@ ProcessBase::~ProcessBase()
 
 }
 
-void ProcessBase::beginProcess(const QString& title)
+void ProcessBase::beginProcess(const wchar_t* title)
 {
     if(_processValue != nullptr) {
         _processValue->setNextProcessExpected();
     }
     _processValue = nullptr;
-    _processValue = ProcessFactory::Instance().createIndeterminate();
-    _processValue->init(title);
+    _processValue.reset(ProcessFactory::Instance().createIndeterminate());
+    _processValue->init(QString::fromWCharArray(title));
 }
 
-void ProcessBase::beginProcess(const QString& title, qint32 stepsCount)
+void ProcessBase::beginProcess(const wchar_t* title, int stepsCount)
 {
     if(_processValue != nullptr) {
         _processValue->setNextProcessExpected();
     }
     _processValue = nullptr;
     auto value = ProcessFactory::Instance().createDeterminate();
-    value->init(title, stepsCount);
-    _processValue = value;
+    value->init(QString::fromWCharArray(title), stepsCount);
+    _processValue.reset(value);
 }
 
-void ProcessBase::setProcessTitle(const QString& title)
+void ProcessBase::setProcessTitle(const wchar_t* title)
 {
-    _processValue->setTitle(title);
+    _processValue->setTitle(QString::fromWCharArray(title));
 }
 
-void ProcessBase::increaseProcessStepsCount(qint32 stepsCount)
+void ProcessBase::increaseProcessStepsCount(int stepsCount)
 {
     if(auto determinate = _processValue->AsDeterminate()) {
         determinate->increaseStepsCount(stepsCount);
