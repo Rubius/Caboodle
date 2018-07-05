@@ -48,11 +48,11 @@ public:
     {
         _value ^= flag;
     }
-    void SetFlag(Enum flag)
+    void AddFlag(Enum flag)
     {
         _value |= flag;
     }
-    void UnsetFlag(Enum flag)
+    void RemoveFlag(Enum flag)
     {
         _value &= ~flag;
     }
