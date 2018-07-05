@@ -21,10 +21,10 @@ public:
     enum Option {
         Option_IsExportable = 0x1,// if property should be saved or loaded from file
         Option_IsPresentable = 0x2,// if property should be presented in properties model
-        Option_IsReadOnly = 0x4,
+        Option_IsReadOnly = 0x4, // if property cans be edited from gui
 
         Options_Default = Option_IsExportable | Option_IsPresentable,
-        Options_Internal = 0
+        Options_InternalProperty = 0
     };
     DECL_FLAGS(Options, Option)
 
