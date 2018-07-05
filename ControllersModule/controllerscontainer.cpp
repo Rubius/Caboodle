@@ -26,9 +26,21 @@ void ControllersContainer::SetCurrent(ControllerBase* controller) {
         ControllerBase* c = _currentController;
         while(c != cp) {
             c->ResetCommandsChain();
-            c->Abort();
+            c->Cancel();
             c = c->GetParentController();
         }
+
+        Controllers applyControllers { controller };
+        c = controller;
+        while(c != cp) {
+            c = controller->GetParentController();
+            applyControllers.Append(c);
+        }
+
+        for(ControllerBase* controller : adapters::reverse(applyControllers)) {
+            controller->enterEvent();
+        }
+
         _currentController = controller;
     }
 }
@@ -40,17 +52,12 @@ void ControllersContainer::SetCurrent(const Name& name)
 
 void ControllersContainer::Accept()
 {
-    if(ControllerBase* cp = _currentController->GetParentController()) {
-        _currentController->Accept(cp->GetCommands());
-        this->SetCurrent(cp);
-    }
+    _currentController->Accept();
 }
 
-void ControllersContainer::Abort()
+void ControllersContainer::Cancel()
 {
-    if(ControllerBase* cp = _currentController->GetParentController()) {
-        this->SetCurrent(cp);
-    }
+    _currentController->Cancel();
 }
 
 void ControllersContainer::Undo()

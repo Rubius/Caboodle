@@ -56,6 +56,7 @@ public:
     MacroCommand* ToMacro(const QString& name);
 
     void Clear();
+    bool IsEmpty() const { return _count == 0; }
 
     void BeginMacro(const QString &text);
     void EndMacro();
@@ -70,6 +71,7 @@ public:
 public Q_SLOTS:
     void Redo();
     void Undo();
+    void UndoAll();
 
 protected: //common element for visualable commands container
     void redoPrivate();

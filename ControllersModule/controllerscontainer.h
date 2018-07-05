@@ -34,7 +34,7 @@ public:
     template<class T> const T& GetContext() const { Q_ASSERT(_context != nullptr); return *static_cast<T*>(_context); }
 
     void Accept();
-    void Abort();
+    void Cancel();
     void Undo();
     void Redo();
 

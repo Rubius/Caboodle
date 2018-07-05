@@ -92,6 +92,13 @@ void CommandsContainer::Undo()
     }
 }
 
+void CommandsContainer::UndoAll()
+{
+    while(CanUndo()) {
+        undoPrivate();
+    }
+}
+
 void CommandsContainer::redoPrivate()
 {
     _commands[_current]->Redo();
