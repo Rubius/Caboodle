@@ -118,6 +118,8 @@ public:
     const T* Ptr() const { return &_value; }
     operator const T&() const { return _value; }
 
+    template<class T2> T2 Cast() const { return (T2)_value; }
+
 protected:
     virtual QVariant getValue() const Q_DECL_OVERRIDE { return _value; }
 protected:
