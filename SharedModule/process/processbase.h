@@ -8,7 +8,10 @@ class ProcessValue;
 class ProcessBase
 {
 public:
-    void Start();
+    template<class T, typename ... Args>
+    static void CreateProccess(Args ... args) {
+        (new T(args...))->startAsyncAndDestroySelfAfterFinish();
+    }
 
 protected:
     ProcessBase();
@@ -22,6 +25,9 @@ protected:
     bool isProcessCanceled() const;
 
     virtual void run();
+
+private:
+    void startAsyncAndDestroySelfAfterFinish();
 
 private:
     std::unique_ptr<ProcessValue> _processValue;

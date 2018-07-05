@@ -61,7 +61,7 @@ void ProcessBase::run()
 {
 }
 
-void ProcessBase::Start()
+void ProcessBase::startAsyncAndDestroySelfAfterFinish()
 {
     ThreadFunction::Async([this]{
         this->run();
