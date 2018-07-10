@@ -22,11 +22,11 @@ public:
         : _begin(nullptr)
         , _end(nullptr)
         , _first(nullptr)
-        , _count(args.size())
+        , _count((qint32)args.size())
     {
         if(args.size()) {
-            Alloc(args.size(), 0);
-            MemMove(_first, args.begin(), args.size());
+            Alloc((qint32)args.size(), 0);
+            MemMove(_first, args.begin(), (qint32)args.size());
         }
     }
     ~MiddleAlgoData()
