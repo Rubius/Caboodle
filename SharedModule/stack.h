@@ -1,6 +1,6 @@
 #ifndef STACK_H
 #define STACK_H
-#include "decl.h"
+#include "shared_decl.h"
 #include <memory>
 #include <Qt>
 

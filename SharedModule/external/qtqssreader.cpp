@@ -2,7 +2,6 @@
 
 #ifndef NO_WIDGETS_INTERFACE
 
-#include "SharedModule/decl.h"
 #include <QFile>
 #include <QFileInfo>
 #include <QApplication>
@@ -47,11 +46,13 @@ QString QtQSSReader::ReadAll() const
             QFile qssFile(qssFileName);
             if(qssFile.open(QFile::ReadOnly)) {
                 result += qssFile.readAll();
+            } else {
+                qCWarning(LC_SYSTEM) << "No such file" << qssFileName;
             }
             pos += re.matchedLength();
         }
     } else {
-        qWarning() << file.errorString();
+        qCWarning(LC_SYSTEM) << file.errorString() << fi.absoluteFilePath();
     }
     return result;
 }

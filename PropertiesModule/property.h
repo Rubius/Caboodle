@@ -4,11 +4,8 @@
 #include <QUrl>
 #include <functional>
 
-#include <SharedModule/flags.h>
-#include <SharedModule/name.h>
-#include <SharedModule/decl.h>
+#include <SharedModule/internal.hpp>
 #include <SharedGuiModule/decl.h> // Vector3f
-
 
 class Property {
 public:

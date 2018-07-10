@@ -3,7 +3,7 @@
 
 #include <QTypeInfo>
 #include <memory>
-#include "decl.h"
+#include "shared_decl.h"
 
 template<class T>
 class MiddleAlgoData {

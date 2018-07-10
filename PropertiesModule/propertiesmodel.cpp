@@ -138,7 +138,6 @@ void PropertiesModel::Save(const QString& fileName) const
 void PropertiesModel::Load(const QString& fileName)
 {
     Q_ASSERT(!fileName.isEmpty());
-    LOGOUT;
     QSettings settings(fileName, QSettings::IniFormat);
     settings.setIniCodec("utf-8");
 
@@ -149,7 +148,7 @@ void PropertiesModel::Load(const QString& fileName)
     for(const QString& key : settings.allKeys()) {
         auto find = tree.find(Name(key));
         if(find == tree.end()) {
-            log.Warning() << "unknown property" << key;
+            qCWarning(LC_SYSTEM) << "unknown property" << key;
         } else {
             if(find.value()->GetOptions().TestFlag(Property::Option_IsExportable)) {
                 find.value()->SetValue(settings.value(key));

@@ -1,7 +1,7 @@
 #ifndef PROFILE_UTILS_H
 #define PROFILE_UTILS_H
 
-#include "decl.h"
+#include "internal.hpp"
 
 #ifndef CLOCKS_COUNT
 #define CLOCKS_COUNT 30
@@ -68,9 +68,11 @@ template<class T, template<typename> class Ptr> class Stack;
 
 class PerformanceClocks : public TimerClocks
 {
-    Messager _messager;
+    const char* _function;
+    const char* _file;
+    quint32 _line;
 public:
-    PerformanceClocks(const char* caption, const char* file, quint32 line);
+    PerformanceClocks(const char* function, const char* file, quint32 line);
 
     static void PrintReport();
 

@@ -218,7 +218,6 @@ void PropertiesView::validateActionsVisiblity()
 
 void PropertiesView::on_OpenWithTextEditor_triggered()
 {
-    LOGOUT;
     QString openFile = _indexUnderCursor.data().toString();
 
     QStringList arguments { openFile };
@@ -226,7 +225,7 @@ void PropertiesView::on_OpenWithTextEditor_triggered()
     QProcess *process = new QProcess(this);
     process->start(textEditor(), arguments);
 
-    log.Warning() << "Opening" << textEditor() << arguments;
+    qCWarning(LC_SYSTEM) << "Opening" << textEditor() << arguments;
 }
 
 #endif

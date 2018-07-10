@@ -2,8 +2,7 @@
 #define SHAREDGUIMODULE_DECL_H
 
 #include <QMetaEnum>
-
-#include <QDebug>
+#include <QLoggingCategory>
 
 #ifndef STATIC_LINK
 #if defined(LIBRARY)
@@ -173,30 +172,13 @@ struct CastablePtr{
 
 Q_DECLARE_TYPEINFO(CastablePtr, Q_PRIMITIVE_TYPE);
 
-class Messager
-{
-    const char* _label;
-    QByteArray _location;
-public:
-    Messager(const char* lbl, const char* file, qint32 line);
-
-    void Error(const char* fmt, ...) const;
-    void Warning(const char* fmt, ...) const;
-    void Info(const char* fmt, ...) const;
-
-    QDebug Error() const;
-    QDebug Warning() const;
-    QDebug Info() const;
-};
+Q_DECLARE_LOGGING_CATEGORY(LC_UI)
+Q_DECLARE_LOGGING_CATEGORY(LC_SYSTEM)
 
 #ifndef QT_NO_DEBUG
 #define DEBUG_BUILD
 #endif
 
-#define tDebug \
-    (qDebug().nospace() << "   Loc: [" << __FILE__ << ":" << __LINE__ << "] ").space() << QString::asprintf
-
-#define LOGOUT Messager log(__FUNCTION__, __FILE__, __LINE__)
 
 #define ASSURE(expression, message, what) \
     if(!expression) { \
