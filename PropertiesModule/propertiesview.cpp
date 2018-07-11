@@ -150,7 +150,7 @@ PropertiesView::PropertiesView(QWidget* parent, Qt::WindowFlags flags)
     setRootIsDecorated(false);
     setUniformRowHeights(true);
     header()->hide();
-    setIndentation(5);
+    setIndentation(0);
     setAnimated(true);
 
     setSortingEnabled(true);

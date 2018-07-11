@@ -12,6 +12,7 @@
 #include "flags.h"
 #include "profile_utils.h"
 #include "shared_decl.h"
+#include "nativetranslates.h"
 #include "name.h"
 #endif
 
