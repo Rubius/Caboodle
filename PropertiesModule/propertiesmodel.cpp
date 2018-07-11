@@ -2,7 +2,6 @@
 
 #include "propertiessystem.h"
 #include "property.h"
-#include <QSettings>
 
 PropertiesModel::PropertiesModel(QObject* parent)
     : QAbstractItemModel(parent)
@@ -123,40 +122,12 @@ void PropertiesModel::reset(const QHash<Name, Property*>& tree)
 
 void PropertiesModel::Save(const QString& fileName) const
 {
-    Q_ASSERT(!fileName.isEmpty());
-    QSettings settings(fileName, QSettings::IniFormat);
-    settings.setIniCodec("utf-8");
-
-    QString path;
-    forEachItem(path, _root.data(), [&settings](const QString& path, const Item* item) {
-        if(item->Prop->GetOptions().TestFlag(Property::Option_IsExportable)) {
-            settings.setValue(path + item->Name, item->Prop->getValue());
-        }
-    });
+    PropertiesSystem::Save(fileName, _contextIndex);
 }
 
 void PropertiesModel::Load(const QString& fileName)
-{
-    Q_ASSERT(!fileName.isEmpty());
-    QSettings settings(fileName, QSettings::IniFormat);
-    settings.setIniCodec("utf-8");
-
-    beginResetModel();
-
-    const auto& tree = PropertiesSystem::context(_contextIndex);
-
-    for(const QString& key : settings.allKeys()) {
-        auto find = tree.find(Name(key));
-        if(find == tree.end()) {
-            qCWarning(LC_SYSTEM) << "unknown property" << key;
-        } else {
-            if(find.value()->GetOptions().TestFlag(Property::Option_IsExportable)) {
-                find.value()->SetValue(settings.value(key));
-            }
-        }
-    }
-
-    endResetModel();
+{    
+    PropertiesSystem::Load(fileName, _contextIndex);
 }
 
 int PropertiesModel::rowCount(const QModelIndex& parent) const

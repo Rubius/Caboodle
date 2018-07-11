@@ -1,5 +1,7 @@
 #include "propertiessystem.h"
 
+#include <QSettings>
+
 #include <SharedModule/stack.h>
 #include <SharedModule/threads/threadeventshelper.h>
 
@@ -60,6 +62,41 @@ QVariant PropertiesSystem::GetValue(const Name& path, qint32 type)
     auto find = contexts()[type]->find(path);
     Q_ASSERT_X(find != contexts()[type]->end(), "PropertiesSystem::getValue", path.AsString().toLatin1().constData());
     return find.value()->getValue();
+}
+
+void PropertiesSystem::Load(const QString& fileName, quint8 contextIndex)
+{
+    Q_ASSERT(!fileName.isEmpty());
+    QSettings settings(fileName, QSettings::IniFormat);
+    settings.setIniCodec("utf-8");
+
+    const auto& tree = PropertiesSystem::context(contextIndex);
+
+    for(const QString& key : settings.allKeys()) {
+        auto find = tree.find(Name(key));
+        if(find == tree.end()) {
+            qCWarning(LC_SYSTEM) << "unknown property" << key;
+        } else {
+            if(find.value()->GetOptions().TestFlag(Property::Option_IsExportable)) {
+                find.value()->SetValue(settings.value(key));
+            }
+        }
+    }
+}
+
+void PropertiesSystem::Save(const QString& fileName, quint8 contextIndex)
+{
+    Q_ASSERT(!fileName.isEmpty());
+    QSettings settings(fileName, QSettings::IniFormat);
+    settings.setIniCodec("utf-8");
+
+    auto it = context(contextIndex).begin();
+    auto e = context(contextIndex).end();
+    for(; it != e; it++) {
+        if(it.value()->GetOptions().TestFlag(Property::Option_IsExportable)) {
+            settings.setValue(it.key().AsString(), it.value()->getValue());
+        }
+    }
 }
 
 void PropertiesSystem::Clear()

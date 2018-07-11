@@ -31,6 +31,8 @@ public:
     template<class T>
     static PropertyPromise<T> GetProperty(const Name& path, const FOnChange& onChange, qint32 type = Global);
 
+    static void Load(const QString& fileName, quint8 contextIndex);
+    static void Save(const QString& fileName, quint8 contextIndex);
     // clear current context
     static void Clear();
 
