@@ -4,6 +4,8 @@
 class IProcess
 {
 public:
+    virtual ~IProcess() {}
+
     virtual void beginProcess(const wchar_t*) = 0;
     virtual void beginProcess(const wchar_t*, int) = 0;
     virtual void setProcessTitle(const wchar_t*) = 0;
