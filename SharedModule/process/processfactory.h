@@ -1,12 +1,12 @@
 #ifndef PROCCESSFACTORY_H
 #define PROCCESSFACTORY_H
 
-#include <QString>
+#include <string>
 
 struct DescProccesValueState
 {
-    QString Title;
-    qint32 Depth;
+    std::wstring Title;
+    int Depth;
     bool IsFinished;
     bool IsNextProcessExpected;
 
@@ -24,28 +24,28 @@ public:
     virtual ~ProcessValue();
 
     DescProccesValueState GetState() const { return { GetTitle(), GetDepth(), IsFinished(), IsNextProcessExpected() }; }
-    qint32 GetDepth() const { return _valueDepth; }
-    const QString& GetTitle() const { return _title; }
+    int GetDepth() const { return _valueDepth; }
+    const std::wstring& GetTitle() const { return _title; }
     bool IsCanceled() const { return _isCanceled; }
     bool IsNextProcessExpected() const { return _isNextProcessExpected; }
     bool IsFinished() const { return _isFinished; }
     virtual class ProcessDeterminateValue* AsDeterminate() { return nullptr; }
 
 protected:
-    void setTitle(const QString& title);
+    void setTitle(const std::wstring& title);
     void finish();
     void setNextProcessExpected();
 
     virtual void incrementStep();
-    void init(const QString& title);
+    void init(const std::wstring& title);
 
 private:
     friend class ProcessFactory;
     friend class ProcessBase;
 
-    qint32 _valueDepth;
+    int _valueDepth;
     FCallback _callback;
-    QString _title;
+    std::wstring _title;
     bool _isNextProcessExpected;
     bool _isCanceled;
     bool _isFinished;
@@ -53,8 +53,8 @@ private:
 
 struct DescProcessDeterminateValueState : DescProccesValueState
 {
-    qint32 CurrentStep;
-    qint32 StepsCount;
+    int CurrentStep;
+    int StepsCount;
 };
 
 class ProcessDeterminateValue : public ProcessValue
@@ -66,20 +66,20 @@ public:
     ~ProcessDeterminateValue();
 
     DescProcessDeterminateValueState GetState() const { return { GetTitle(), GetDepth(), IsFinished(), IsNextProcessExpected(), GetCurrentStep(), GetStepsCount() }; }
-    qint32 GetCurrentStep() const { return _currentStep; }
-    qint32 GetStepsCount() const { return _stepsCount; }
-    virtual ProcessDeterminateValue* AsDeterminate() Q_DECL_OVERRIDE{ return this; }
+    int GetCurrentStep() const { return _currentStep; }
+    int GetStepsCount() const { return _stepsCount; }
+    virtual ProcessDeterminateValue* AsDeterminate() override{ return this; }
 
 private:
-    virtual void incrementStep() Q_DECL_OVERRIDE;
+    virtual void incrementStep() override;
 
     friend class ProcessBase;
-    void init(const QString& title, qint32 stepsCount);
-    void increaseStepsCount(qint32 value);
+    void init(const std::wstring& title, int stepsCount);
+    void increaseStepsCount(int value);
 
 private:
-    qint32 _currentStep;
-    qint32 _stepsCount;
+    int _currentStep;
+    int _stepsCount;
 };
 
 class ProcessFactory

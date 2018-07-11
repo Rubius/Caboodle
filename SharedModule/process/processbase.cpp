@@ -21,7 +21,7 @@ void ProcessBase::beginProcess(const wchar_t* title)
     }
     _processValue = nullptr;
     _processValue.reset(ProcessFactory::Instance().createIndeterminate());
-    _processValue->init(QString::fromWCharArray(title));
+    _processValue->init(title);
 }
 
 void ProcessBase::beginProcess(const wchar_t* title, int stepsCount)
@@ -31,13 +31,13 @@ void ProcessBase::beginProcess(const wchar_t* title, int stepsCount)
     }
     _processValue = nullptr;
     auto value = ProcessFactory::Instance().createDeterminate();
-    value->init(QString::fromWCharArray(title), stepsCount);
+    value->init(title, stepsCount);
     _processValue.reset(value);
 }
 
 void ProcessBase::setProcessTitle(const wchar_t* title)
 {
-    _processValue->setTitle(QString::fromWCharArray(title));
+    _processValue->setTitle(title);
 }
 
 void ProcessBase::increaseProcessStepsCount(int stepsCount)

@@ -22,7 +22,7 @@ ProcessValue::~ProcessValue()
     --depthCounter();
 }
 
-void ProcessValue::setTitle(const QString& title)
+void ProcessValue::setTitle(const std::wstring& title)
 {
     _title = title;
     _callback(this);
@@ -46,7 +46,7 @@ void ProcessValue::incrementStep()
     _callback(this);
 }
 
-void ProcessValue::init(const QString& title)
+void ProcessValue::init(const std::wstring& title)
 {
     _title = title;
     _callback(this);
@@ -63,14 +63,14 @@ void ProcessDeterminateValue::incrementStep()
     Super::incrementStep();
 }
 
-void ProcessDeterminateValue::init(const QString& title, qint32 stepsCount)
+void ProcessDeterminateValue::init(const std::wstring& title, int stepsCount)
 {
     _currentStep = 0;
     _stepsCount = stepsCount;
     Super::init(title);
 }
 
-void ProcessDeterminateValue::increaseStepsCount(qint32 value)
+void ProcessDeterminateValue::increaseStepsCount(int value)
 {
     _stepsCount += value;
     (void)Super::incrementStep();
