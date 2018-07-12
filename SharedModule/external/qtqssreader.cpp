@@ -45,15 +45,14 @@ QString QtQSSReader::ReadAll()
 
     QString result;
     QFileInfo fi(_fileName);
-    DirBinder dir(fi.absolutePath());
-    QFile file(fi.fileName());
+    QFile file(fi.absoluteFilePath());
     if(file.open(QFile::ReadOnly)) {
         QString importsFile = file.readAll();
         QRegExp re("@import url\\(\"([^\\)]*)\"\\);");
         qint32 pos(0);
         while ((pos = re.indexIn(importsFile,pos)) != -1) {
             QString qssFileName = re.cap(1);
-            QFile qssFile(qssFileName);
+            QFile qssFile(fi.absolutePath() + "/" + qssFileName);
             if(qssFile.open(QFile::ReadOnly)) {
                 if(_observer) {
                     _observer->AddFileObserver(fi.absolutePath(), qssFileName, [this]{
