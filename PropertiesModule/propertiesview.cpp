@@ -223,7 +223,8 @@ void PropertiesView::on_OpenWithTextEditor_triggered()
     QStringList arguments { openFile };
 
     QProcess *process = new QProcess(this);
-    process->start(textEditor(), arguments);
+    connect(process, SIGNAL(finished(int)), process, SLOT(deleteLater()));
+    process->start(textEditor(), arguments);    
 
     qCWarning(LC_SYSTEM) << "Opening" << textEditor() << arguments;
 }

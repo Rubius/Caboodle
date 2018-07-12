@@ -8,31 +8,41 @@
 
 #include "external.hpp"
 
-QtQSSReader::QtQSSReader(const QString& mainQSSFile)
-    : _fileName(mainQSSFile)
+QtQSSReader::QtQSSReader()
 {
 
 }
 
-void QtQSSReader::Install(const QString* mainQSSFile)
+QtQSSReader::~QtQSSReader()
 {
-    QtQSSReader reader(*mainQSSFile);
-    ((QApplication*)QApplication::instance())->setStyleSheet(reader.ReadAll());
+
 }
 
-void QtQSSReader::InstallAndObserve(const QString* mainQSSFile)
+void QtQSSReader::SetEnableObserver(bool enable)
 {
-    static bool installed = false;
-    Q_ASSERT(installed == false);
-
-    Observer::Instance()->AddFileObserver(mainQSSFile, [mainQSSFile]() {
-        Install(mainQSSFile);
-    });
-    Install(mainQSSFile);
+    if(enable) {
+        _observer = new QtObserver(500);
+    } else {
+        _observer = nullptr;
+    }
 }
 
-QString QtQSSReader::ReadAll() const
-{
+void QtQSSReader::Install(const QString& mainQSSFile)
+{ 
+    _fileName = mainQSSFile;
+
+    ((QApplication*)QApplication::instance())->setStyleSheet(ReadAll());
+}
+
+QString QtQSSReader::ReadAll()
+{        
+    if(_observer) {
+        _observer->Clear();
+        _observer->AddFileObserver(_fileName, [this]{
+            Install(_fileName);
+        });
+    }
+
     QString result;
     QFileInfo fi(_fileName);
     DirBinder dir(fi.absolutePath());
@@ -45,6 +55,11 @@ QString QtQSSReader::ReadAll() const
             QString qssFileName = re.cap(1);
             QFile qssFile(qssFileName);
             if(qssFile.open(QFile::ReadOnly)) {
+                if(_observer) {
+                    _observer->AddFileObserver(fi.absolutePath(), qssFileName, [this]{
+                        Install(_fileName);
+                    });
+                }
                 result += qssFile.readAll();
             } else {
                 qCWarning(LC_SYSTEM) << "No such file" << qssFileName;

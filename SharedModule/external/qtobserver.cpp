@@ -6,44 +6,44 @@
 
 QtObserver::QtObserver(qint32 msInterval, QObject* parent)
     : QObject(parent)
+    , _doObserve([](const Observable*){})
 {
     auto timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
     timer->start(msInterval);
 }
 
-void QtObserver::Add(const QtObserver::Condition& condition, const QtObserver::Handle& handle)
+void QtObserver::Add(const FCondition& condition, const FHandle& handle)
 {
-    this->_conditions.append(condition);
-    this->_handles.append(handle);
+    this->_observables.Append(new Observable{ condition, handle });
 }
 
-void QtObserver::AddFileObserver(const QString* file, const QtObserver::Handle& handle)
+void QtObserver::AddFileObserver(const QString& file, const FHandle& handle)
 {
-    Add([file,this] {
-        QFileInfo fi(*file);
+    Add([file, this]{
+        QFileInfo fi(file);
         if(fi.exists()) {
             qint64 currentLastModified = fi.lastModified().toMSecsSinceEpoch();
-            return testValue(file, currentLastModified);
+            return testValue(&file, currentLastModified);
         }
         return false;
     }, handle);
 }
 
-void QtObserver::AddFileObserver(const QString* dir, const QString* file, const QtObserver::Handle& handle)
+void QtObserver::AddFileObserver(const QString& dir, const QString& file, const FHandle& handle)
 {
     Add([dir,file,this]{
-        QFileInfo fi(*file);
-        DirBinder dbinder(*dir);
+        QFileInfo fi(file);
+        DirBinder dbinder(dir);
         if(fi.exists()) {
             qint64 currentLastModified = fi.lastModified().toMSecsSinceEpoch();
-            return testValue(file, currentLastModified);
+            return testValue(&file, currentLastModified);
         }
         return false;
     }, handle);
 }
 
-void QtObserver::AddFloatObserver(const float* value, const QtObserver::Handle& handle)
+void QtObserver::AddFloatObserver(const float* value, const FHandle& handle)
 {
     Add([value,this](){
         qint64 asInt64 = *(const qint32*)value;
@@ -51,7 +51,7 @@ void QtObserver::AddFloatObserver(const float* value, const QtObserver::Handle& 
     }, handle);
 }
 
-void QtObserver::AddStringObserver(const QString* value, const QtObserver::Handle& handle)
+void QtObserver::AddStringObserver(const QString* value, const FHandle& handle)
 {
     Add([value,this](){
         qint64 asInt64 = qHash(*value);
@@ -59,15 +59,23 @@ void QtObserver::AddStringObserver(const QString* value, const QtObserver::Handl
     }, handle);
 }
 
+void QtObserver::Clear()
+{
+    _doObserve = [](const Observable*){};
+    _counters.clear();
+    _observables.Clear();
+}
+
 void QtObserver::onTimeout()
 {
-    auto it = _handles.begin();
-    for(const Condition&  c: _conditions) {
-        if(c()) {
-            (*it)();
-        }
-        it++;
+    for(const Observable* observable : _observables) {
+        _doObserve(observable);
     }
+    _doObserve = [](const Observable* observable){
+        if(observable->Condition()) {
+            observable->Handle();
+        }
+    };
 }
 
 bool QtObserver::testValue(const void* value, qint64 asInt64)
