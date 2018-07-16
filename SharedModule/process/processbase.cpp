@@ -61,10 +61,11 @@ void ProcessBase::run()
 {
 }
 
-void ProcessBase::startAsyncAndDestroySelfAfterFinish()
+void ProcessBase::startAsyncAndDestroySelfAfterFinish(const FOnFinish& onFinish)
 {
-    ThreadFunction::Async([this]{
+    ThreadFunction::Async([this, onFinish]{
         this->run();
         delete this;
+        onFinish();
     });
 }

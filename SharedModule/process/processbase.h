@@ -20,13 +20,15 @@ public:
 
 class ProcessBase : public IProcess
 {
+    typedef std::function<void ()> FOnFinish;
+
 public:
     ProcessBase();
     ~ProcessBase();
 
     template<class T, typename ... Args>
-    static void CreateProccess(Args ... args) {
-        (new T(args...))->startAsyncAndDestroySelfAfterFinish();
+    static void CreateProccess(const FOnFinish& onFinish, Args ... args) {
+        (new T(args...))->startAsyncAndDestroySelfAfterFinish(onFinish);
     }
 
 protected:
@@ -40,7 +42,7 @@ protected:
     virtual void run();
 
 private:
-    void startAsyncAndDestroySelfAfterFinish();
+    void startAsyncAndDestroySelfAfterFinish(const FOnFinish& onFinish);
 
 private:
     std::unique_ptr<ProcessValue> _processValue;
