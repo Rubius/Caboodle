@@ -6,7 +6,7 @@
 class PropertiesDialog : public QDialog
 {
 public:
-    PropertiesDialog(QWidget* parent = nullptr, Qt::WindowFlags flags= 0);
+    PropertiesDialog(qint32 contextIndex, QWidget* parent = nullptr, Qt::WindowFlags flags= Qt::WindowFlags());
 };
 
 #endif // PROPERTIESDIALOG_H

@@ -4,6 +4,7 @@
 #if defined __cplusplus
 #include "qtinlineevent.h"
 #include "qtobserver.h"
+#include "utils.h"
 
 typedef QtObserver Observer;
 typedef QtInlineEvent InlineEvent;
