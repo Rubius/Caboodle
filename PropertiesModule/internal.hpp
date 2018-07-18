@@ -6,6 +6,8 @@
 #include "propertypromise.h"
 #include "propertiesvalidators.h"
 #include "propertiessystem.h"
+#include "propertiesview.h"
+#include "propertiesdialog.h"
 #endif
 
 #endif // INTERNAL_HPP

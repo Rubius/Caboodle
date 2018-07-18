@@ -177,6 +177,22 @@ PropertiesView::PropertiesView(QWidget* parent, Qt::WindowFlags flags)
     QMetaObject::connectSlotsByName(this);
 }
 
+PropertiesView::PropertiesView(qint32 contextIndex, QWidget* parent, Qt::WindowFlags flags)
+    : PropertiesView(parent, flags)
+{
+    SetContextIndex(contextIndex);
+}
+
+void PropertiesView::SetContextIndex(qint32 contextIndex)
+{
+    _propertiesModel->SetContextIndex(contextIndex);
+}
+
+qint32 PropertiesView::GetContextIndex() const
+{
+    return _propertiesModel->GetContextIndex();
+}
+
 void PropertiesView::Save(const QString& fileName)
 {
     _propertiesModel->Save(fileName);

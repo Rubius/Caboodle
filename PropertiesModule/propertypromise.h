@@ -59,5 +59,6 @@ PropertyPromise<T> PropertiesSystem::GetProperty(const Name& path, const FOnChan
 }
 
 typedef PropertyPromise<UIntProperty> UIntPropertyPtr;
+typedef PropertyPromise<BoolProperty> BoolPropertyPtr;
 
 #endif // PROPERTYPROMISE_H

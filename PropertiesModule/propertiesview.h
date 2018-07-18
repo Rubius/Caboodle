@@ -12,6 +12,10 @@ class PropertiesView : public QTreeView
     typedef QTreeView Super;
 public:
     PropertiesView(QWidget* parent=0, Qt::WindowFlags flags=0);
+    PropertiesView(qint32 contextIndex, QWidget* parent=0, Qt::WindowFlags flags=0);
+
+    void SetContextIndex(qint32 contextIndex);
+    qint32 GetContextIndex() const;
 
     void Save(const QString& fileName);
     void Load(const QString& fileName);

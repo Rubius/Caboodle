@@ -41,7 +41,7 @@ void ThreadComputingBase::run()
     while (!_stoped) {
         auto guard = guards::make(this, &ThreadComputingBase::fpsBind, &ThreadComputingBase::fpsRelease);
 
-        CallEvents();
+        callEvents();
 
         compute();
     }
