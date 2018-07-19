@@ -132,6 +132,16 @@ public:
         , _min(min)
         , _max(max)
     {}
+
+    void SetMinMax(const T& min, const T& max)
+    {
+        _min = min;
+        _max = max;
+        if(_value < _min || _value > _max) {
+            SetValue(_value);
+        }
+    }
+
     virtual QVariant GetMin() const Q_DECL_OVERRIDE { return _min; }
     virtual QVariant GetMax() const Q_DECL_OVERRIDE { return _max; }
 protected:

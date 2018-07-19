@@ -9,6 +9,15 @@ QAction* createAction(const QString& title, const std::function<void ()>& handle
     return result;
 }
 
+QAction* createAction(const QString& title, const std::function<void (QAction*)>& handle)
+{
+    auto result = new QAction(title);
+    result->connect(result, &QAction::triggered, [handle, result]{
+        handle(result);
+    });
+    return result;
+}
+
 void forEachModelIndex(QAbstractItemModel* model, QModelIndex parent, const std::function<void (const QModelIndex&)>& function)
 {
     for(int r = 0; r < model->rowCount(parent); ++r) {
@@ -21,3 +30,5 @@ void forEachModelIndex(QAbstractItemModel* model, QModelIndex parent, const std:
     }
 }
 #endif
+
+
