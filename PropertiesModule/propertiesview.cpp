@@ -71,6 +71,12 @@ public:
         }
 
         switch (data.type()) {
+        case QVariant::Bool: {
+            QComboBox* result = new QComboBox(parent);
+            result->addItems({ tr("false"), tr("true") });
+            result->setFocusPolicy(Qt::StrongFocus);
+            return result;
+        }
         case QVariant::UInt:
         case QVariant::Int: {
             QSpinBox* result = new QSpinBox(parent);
@@ -113,6 +119,9 @@ public:
         else if(auto e = qobject_cast<QDoubleSpinBox*>(editor)) {
             auto listener = new PropertiesStyledDelegateListener(e,index,this);
             connect(e, SIGNAL(valueChanged(double)), listener, SLOT(onEditorValueChanged()));
+        } else if(auto e = qobject_cast<QComboBox*>(editor)) {
+            auto listener = new PropertiesStyledDelegateListener(e,index,this);
+            connect(e, SIGNAL(currentIndexChanged(int)), listener, SLOT(onEditorValueChanged()));
         }
     }
 
