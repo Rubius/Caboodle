@@ -58,6 +58,7 @@ protected:
     friend class PropertiesSystem;
     friend class PropertiesModel;
 
+    virtual QVariant getDisplayValue() const { return getValue(); }
     virtual QVariant getValue() const=0;
     virtual void setValueInternal(const QVariant&)=0;
 
@@ -74,6 +75,7 @@ protected:
 template<class T>
 class TExternalProperty : public Property
 {
+protected:
     typedef std::function<T ()> FGetter;
     typedef std::function<void (T value, T oldValue)> FSetter;
 public:
@@ -93,11 +95,41 @@ protected:
     virtual QVariant getValue() const Q_DECL_OVERRIDE { return _getter(); }
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _setter(value.toDouble(), _getter()); }
 
-private:
+protected:
     FGetter _getter;
     FSetter _setter;
     T _min;
     T _max;
+};
+
+class ExternalBoolProperty : public TExternalProperty<bool>
+{
+public:
+    ExternalBoolProperty(const Name& path, const FGetter& getter, const FSetter& setter)
+        : TExternalProperty(path, getter, setter, false, true)
+    {}
+
+protected:
+    virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _setter(value.toBool(), _getter()); }
+};
+
+class ExternalNamedUIntProperty : public TExternalProperty<quint32>
+{
+    typedef TExternalProperty<quint32> Super;
+public:
+    ExternalNamedUIntProperty(const Name& path, const FGetter& getter, const FSetter& setter)
+        : Super(path, getter, setter, 0, 0)
+    {}
+
+    void SetNames(const QStringList& names);
+
+    virtual DelegateValue GetDelegateValue() const Q_DECL_OVERRIDE { return DelegateNamedUInt; }
+    virtual const QVariant* GetDelegateData() const Q_DECL_OVERRIDE{ return &_names; }
+protected:
+    virtual QVariant getDisplayValue() const Q_DECL_OVERRIDE { return _names.value<QStringList>()[_getter()]; }
+
+private:
+    QVariant _names;
 };
 
 template<class T>
@@ -192,7 +224,7 @@ public:
         : TPropertyBase<QUrl>(path, initial)
     {}
 protected:
-    virtual void setValueInternal(const QVariant& value) { this->_value = value.toUrl(); }
+    virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE{ this->_value = value.toUrl(); }
 };
 
 class NamedUIntProperty : public TProperty<quint32>
@@ -206,7 +238,7 @@ public:
     void SetNames(const QStringList& names);
 
     virtual DelegateValue GetDelegateValue() const Q_DECL_OVERRIDE { return DelegateNamedUInt; }
-    virtual const QVariant* GetDelegateData() const { return &_names; }
+    virtual const QVariant* GetDelegateData() const Q_DECL_OVERRIDE{ return &_names; }
 private:
     QVariant _names;
 };
@@ -221,7 +253,6 @@ typedef TProperty<QString> StringProperty;
 typedef TProperty<QUrl> UrlProperty;
 
 // Externals
-typedef TExternalProperty<bool> ExternalBoolProperty;
 typedef TExternalProperty<double> ExternalDoubleProperty;
 typedef TExternalProperty<float> ExternalFloatProperty;
 typedef TExternalProperty<qint32> ExternalIntProperty;

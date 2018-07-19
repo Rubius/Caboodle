@@ -21,6 +21,7 @@ public:
         RoleDelegateData
     };
     PropertiesModel(QObject* parent=0);
+    PropertiesModel(qint32 contextIndex, QObject* parent=0);
 
 Q_SIGNALS:
     void fileNameChanged();

@@ -10,6 +10,13 @@ PropertiesModel::PropertiesModel(QObject* parent)
     reset();
 }
 
+PropertiesModel::PropertiesModel(qint32 contextIndex, QObject* parent)
+    : QAbstractItemModel(parent)
+    , _contextIndex(contextIndex)
+{
+    reset();
+}
+
 void PropertiesModel::Change(const std::function<void ()>& handle)
 {
     beginResetModel();
@@ -145,7 +152,16 @@ QVariant PropertiesModel::data(const QModelIndex& index, int role) const
     }
 
     switch (role) {
-    case Qt::DisplayRole:
+    case Qt::DisplayRole: {
+        auto item = asItem(index);
+        if(item->Prop && index.column()) {
+            return item->Prop->getDisplayValue();
+        }
+        if(!index.column()) {
+            return item->Name;
+        }
+        break;
+    }
     case Qt::EditRole: {
         auto item = asItem(index);
         if(item->Prop && index.column()) {
@@ -154,6 +170,7 @@ QVariant PropertiesModel::data(const QModelIndex& index, int role) const
         if(!index.column()) {
             return item->Name;
         }
+        break;
     }
     case RoleHeaderItem:
         return !asItem(index)->Prop;

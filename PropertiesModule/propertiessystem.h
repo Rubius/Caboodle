@@ -24,6 +24,7 @@ public:
     static void SetValueForceInvoke(const Name &path, const QVariant &value);
     static void SetValue(const Name& path, const QVariant& value);
     static void Subscribe(const Name& path, const FOnChange& function);
+    static void Subscribe(const FOnChange& function);
     static QVariant GetValue(const Name& path);
     static QVariant GetValue(const Name& path, qint32 type);
     template<class T>

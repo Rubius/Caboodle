@@ -58,3 +58,9 @@ void NamedUIntProperty::SetNames(const QStringList& names)
     _max = names.size() - 1;
     _names = names;
 }
+
+void ExternalNamedUIntProperty::SetNames(const QStringList& names)
+{
+    _max = names.size() - 1;
+    _names = names;
+}

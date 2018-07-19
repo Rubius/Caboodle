@@ -150,6 +150,12 @@ static const StringProperty& textEditor(const char* path = nullptr, const char* 
 }
 
 PropertiesView::PropertiesView(QWidget* parent, Qt::WindowFlags flags)
+    : PropertiesView(PropertiesSystem::Global, parent, flags)
+{
+
+}
+
+PropertiesView::PropertiesView(qint32 contextIndex, QWidget* parent, Qt::WindowFlags flags)
     : Super(parent)
 {
     textEditor("Common/Text editor", "C:\\Windows\\system32\\notepad.exe");
@@ -165,7 +171,7 @@ PropertiesView::PropertiesView(QWidget* parent, Qt::WindowFlags flags)
     setSortingEnabled(true);
     sortByColumn(0, Qt::AscendingOrder);
 
-    _propertiesModel = new PropertiesModel(this);
+    _propertiesModel = new PropertiesModel(contextIndex, this);
     QSortFilterProxyModel* proxy = new QSortFilterProxyModel(this);
     proxy->setSourceModel(_propertiesModel);
     setModel(proxy);
@@ -184,12 +190,6 @@ PropertiesView::PropertiesView(QWidget* parent, Qt::WindowFlags flags)
     setContextMenuPolicy(Qt::ActionsContextMenu);
 
     QMetaObject::connectSlotsByName(this);
-}
-
-PropertiesView::PropertiesView(qint32 contextIndex, QWidget* parent, Qt::WindowFlags flags)
-    : PropertiesView(parent, flags)
-{
-    SetContextIndex(contextIndex);
 }
 
 void PropertiesView::SetContextIndex(qint32 contextIndex)

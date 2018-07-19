@@ -50,6 +50,13 @@ void PropertiesSystem::Subscribe(const Name& path, const PropertiesSystem::FOnCh
     }
 }
 
+void PropertiesSystem::Subscribe(const PropertiesSystem::FOnChange& function)
+{
+    for(Property* property : context()) {
+        property->Subscribe(function);
+    }
+}
+
 QVariant PropertiesSystem::GetValue(const Name& path)
 {
     auto find = context().find(path);
