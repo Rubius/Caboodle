@@ -1,8 +1,29 @@
 #include "threadeventshelper.h"
 #include <QMutexLocker>
 
+#include "SharedModule/internal.hpp"
+
+ThreadEvent::ThreadEvent(ThreadEvent::FEventHandler handler)
+    : _handler(handler)
+{}
+
 void ThreadEvent::call()
 {
+    _handler();
+}
+
+TagThreadEvent::TagThreadEvent(TagThreadEvent::TagsCache* tagsCache, const Name& tag, ThreadEvent::FEventHandler handler)
+    : ThreadEvent(handler)
+    , _tag(tag)
+    , _tagsCache(tagsCache)
+{
+    Q_ASSERT(!tagsCache->contains(tag));
+    tagsCache->insert(tag, this);
+}
+
+void TagThreadEvent::call()
+{
+    _tagsCache->remove(_tag);
     _handler();
 }
 
@@ -19,6 +40,19 @@ void ThreadEventsContainer::Continue()
     }
     _isPaused = false;
     _eventsPaused.wakeAll();
+}
+
+void ThreadEventsContainer::Asynch(const Name& tag, ThreadEvent::FEventHandler handler)
+{
+    QMutexLocker locker(&_eventsMutex);
+
+    auto find = _tagEventsMap.find(tag);
+    if(find == _tagEventsMap.end()) {
+        auto tagEvent = new TagThreadEvent(&_tagEventsMap, tag, handler);
+        _events.push(tagEvent);
+    } else {
+        find.value()->_handler = handler;
+    }
 }
 
 void ThreadEventsContainer::Pause(const FOnPause& onPause)
@@ -41,7 +75,7 @@ void ThreadEventsContainer::Pause(const FOnPause& onPause)
 void ThreadEventsContainer::Asynch(ThreadEvent::FEventHandler handler)
 {
     QMutexLocker locker(&_eventsMutex);
-    _events.push(ThreadEvent(handler));
+    _events.push(new ThreadEvent(handler));
 }
 
 void ThreadEventsContainer::ProcessEvents()
@@ -55,13 +89,13 @@ void ThreadEventsContainer::ProcessEvents()
 void ThreadEventsContainer::callEvents()
 {
     while(!_events.empty()) {
-        ThreadEvent event;
+        ScopedPointer<ThreadEvent> event;
         {
             QMutexLocker locker(&_eventsMutex);
             event = _events.front();
             _events.pop();
         }
-        event.call();
+        event->call();
     }
 
     _eventsProcessed.wakeAll();
@@ -70,7 +104,7 @@ void ThreadEventsContainer::callEvents()
 void ThreadEventsContainer::callPauseableEvents()
 {
     while(!_events.empty()) {
-        ThreadEvent event;
+        ScopedPointer<ThreadEvent> event;
         {
             if(_isPaused) {
                 _onPause();
@@ -82,7 +116,7 @@ void ThreadEventsContainer::callPauseableEvents()
                 _eventsPaused.wait(&_eventsMutex);
             }
         }
-        event.call();
+        event->call();
     }
 
     _eventsProcessed.wakeAll();
