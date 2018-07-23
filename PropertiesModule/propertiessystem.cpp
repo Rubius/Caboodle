@@ -137,7 +137,7 @@ void PropertiesSystem::End()
 
 void PropertiesSystem::addProperty(const Name& path, Property* property) {
 
-    Q_ASSERT_X(!context().contains(path), "PropertiesSystem::setValue", path.AsString().toLatin1().constData());
+    Q_ASSERT_X(!context().contains(path), "PropertiesSystem::addProperty", path.AsString().toLatin1().constData());
     property->Handler() = currentHandle();
     context().insert(path, property);
     auto findSubscribes = delayedSubscribes().find(path);

@@ -58,7 +58,10 @@ PropertyPromise<T> PropertiesSystem::GetProperty(const Name& path, const FOnChan
     return PropertyPromise<T>(path, onChange, type);
 }
 
+typedef PropertyPromise<IntProperty> IntPropertyPtr;
 typedef PropertyPromise<UIntProperty> UIntPropertyPtr;
 typedef PropertyPromise<BoolProperty> BoolPropertyPtr;
+
+template<class T> using PointerPropertyPtr = PropertyPromise<PointerProperty<T>>;
 
 #endif // PROPERTYPROMISE_H

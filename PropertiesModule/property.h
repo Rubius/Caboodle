@@ -150,17 +150,26 @@ public:
     template<class T2> T2 Cast() const { return (T2)_value; }
 
 protected:
-    virtual QVariant getValue() const Q_DECL_OVERRIDE { return _value; }
-protected:
     T _value;
 };
 
 template<class T>
-class TProperty : public TPropertyBase<T>
+class TStdPropertyBase : public TPropertyBase<T>
+{
+protected:
+    TStdPropertyBase(const Name& path, const T& initial)
+        : TPropertyBase<T>(path, initial)
+    {}
+
+    virtual QVariant getValue() const Q_DECL_OVERRIDE { return _value; }
+};
+
+template<class T>
+class TProperty : public TStdPropertyBase<T>
 {
 public:
     TProperty(const Name& path, const T& initial, const T& min, const T& max)
-        : TPropertyBase<T>(path, initial)
+        : TStdPropertyBase<T>(path, initial)
         , _min(min)
         , _max(max)
     {}
@@ -184,27 +193,56 @@ protected:
 };
 
 template<>
-class TProperty<bool> : public TPropertyBase<bool>
+class TProperty<bool> : public TStdPropertyBase<bool>
 {
 public:
     TProperty<bool>(const Name& path, bool initial)
-        : TPropertyBase<bool>(path, initial)
+        : TStdPropertyBase<bool>(path, initial)
     {}
 
-    bool& operator=(bool value) { this->_value = value; return this->_value; }
+    TProperty<bool>& operator=(bool value) { this->SetValue(value); return *this; }
 protected:
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { this->_value = value.toBool(); }
 };
 
 template<>
-class TProperty<QString> : public TPropertyBase<QString>
+class TProperty<QString> : public TStdPropertyBase<QString>
 {
 public:
     TProperty<QString>(const Name& path, const QString& initial)
-        : TPropertyBase<QString>(path, initial)
+        : TStdPropertyBase<QString>(path, initial)
     {}
 protected:
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { this->_value = value.toString(); }
+};
+
+template<>
+class TProperty<QUrl> : public TStdPropertyBase<QUrl>
+{
+public:
+    TProperty<QUrl>(const Name& path, const QUrl& initial)
+        : TStdPropertyBase<QUrl>(path, initial)
+    {}
+protected:
+    virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE{ this->_value = value.toUrl(); }
+};
+
+// Extended
+template<class T>
+class PointerProperty : public TPropertyBase<T*>
+{
+    typedef TPropertyBase<T*> Super;
+public:
+    PointerProperty(const Name& path, T* initial)
+        : Super(path, initial)
+    {}
+
+    PointerProperty<T>& operator=(T* ptr) { SetValue(reinterpret_cast<size_t>(ptr)); return *this; }
+
+    // Property interface
+protected:
+    virtual QVariant getValue() const Q_DECL_OVERRIDE { return reinterpret_cast<size_t>(_value); }
+    virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _value = reinterpret_cast<T*>(value.toLongLong()); }
 };
 
 class TextFileNameProperty : public TProperty<QString>
@@ -214,17 +252,6 @@ public:
         : TProperty<QString>(path, initial)
     {}
     virtual DelegateValue GetDelegateValue() const Q_DECL_OVERRIDE { return DelegateFileName; }
-};
-
-template<>
-class TProperty<QUrl> : public TPropertyBase<QUrl>
-{
-public:
-    TProperty<QUrl>(const Name& path, const QUrl& initial)
-        : TPropertyBase<QUrl>(path, initial)
-    {}
-protected:
-    virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE{ this->_value = value.toUrl(); }
 };
 
 class NamedUIntProperty : public TProperty<quint32>
