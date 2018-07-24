@@ -62,6 +62,8 @@ protected:
     virtual QVariant getValue() const=0;
     virtual void setValueInternal(const QVariant&)=0;
 
+    Q_DISABLE_COPY(Property)
+
 protected:
     FHandle _fHandle;
     FOnChange _fOnChange;
@@ -223,6 +225,8 @@ public:
     TProperty<QUrl>(const Name& path, const QUrl& initial)
         : TStdPropertyBase<QUrl>(path, initial)
     {}
+
+    TProperty<QUrl>& operator=(const QUrl& value) { this->SetValue(value); return *this; }
 protected:
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE{ this->_value = value.toUrl(); }
 };
