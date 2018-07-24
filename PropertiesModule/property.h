@@ -288,6 +288,8 @@ typedef TExternalProperty<double> ExternalDoubleProperty;
 typedef TExternalProperty<float> ExternalFloatProperty;
 typedef TExternalProperty<qint32> ExternalIntProperty;
 typedef TExternalProperty<quint32> ExternalUIntProperty;
+typedef TExternalProperty<QString> ExternalStringProperty;
+typedef TExternalProperty<QUrl> ExternalUrlProperty;
 
 class Vector3FProperty
 {
