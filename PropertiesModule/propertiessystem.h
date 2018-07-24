@@ -25,6 +25,8 @@ public:
     static void SetValue(const Name& path, const QVariant& value);
     static void Subscribe(const Name& path, const FOnChange& function);
     static void Subscribe(const FOnChange& function);
+    static void ForeachProperty(const std::function<void (Property*)>& handle);
+    static void ForeachProperty(const std::function<void (Property*)>& handle, qint32 contextIndex);
     static QVariant GetValue(const Name& path);
     static QVariant GetValue(const Name& path, qint32 type);
     template<class T>
@@ -36,6 +38,9 @@ public:
     static void Save(const QString& fileName, quint8 contextIndex);
     // clear current context
     static void Clear();
+    static void Clear(qint32 contextIndex);
+
+    static bool HasContext(qint32 contextIndex);
 
     // begin current context. Global <= type < Max
     // return FHandle reference. It is property setter by default it just call SetValue()
@@ -64,7 +69,7 @@ private:
     static QHash<Name, Property*>& context();
     static FHandle defaultHandle();
     static FHandle& currentHandle();
-    static Type& currentType();
+    static Type& currentContextIndex();
 };
 
 #endif // PROPS_H

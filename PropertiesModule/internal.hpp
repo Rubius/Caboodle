@@ -3,6 +3,7 @@
 
 #ifdef __cplusplus
 #include "property.h"
+#include "externalproperty.h"
 #include "propertypromise.h"
 #include "propertiesvalidators.h"
 #include "propertiessystem.h"

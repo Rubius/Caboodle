@@ -7,9 +7,11 @@
 class ThreadFunction : public QThread
 {
     typedef std::function<void ()> RunFunction;
-    ThreadFunction(const RunFunction& function);
+    typedef std::function<void ()> OnFinishFunction;
+    ThreadFunction(const RunFunction& function, const OnFinishFunction& onFinish);
 public:
     static void Async(const RunFunction& function);
+    static void Async(const RunFunction& function, const OnFinishFunction& onFinish);
 
     // QThread interface
 protected:
@@ -17,6 +19,7 @@ protected:
 
 private:
     RunFunction _function;
+    OnFinishFunction _onFinish;
 };
 
 #endif // THREADFUNCTION_H

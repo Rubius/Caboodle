@@ -20,6 +20,8 @@ public:
     void Save(const QString& fileName);
     void Load(const QString& fileName);
 
+    class PropertiesModel* GetPropertiesModel() const { return _propertiesModel; }
+
     // QWidget interface
 protected:
     void showEvent(QShowEvent* event) Q_DECL_OVERRIDE;

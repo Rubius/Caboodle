@@ -50,6 +50,18 @@ void PropertiesSystem::Subscribe(const Name& path, const PropertiesSystem::FOnCh
     }
 }
 
+void PropertiesSystem::ForeachProperty(const std::function<void (Property*)>& handle)
+{
+    ForeachProperty(handle, currentContextIndex());
+}
+
+void PropertiesSystem::ForeachProperty(const std::function<void (Property*)>& handle, qint32 contextIndex)
+{
+    for(Property* property : context(contextIndex)) {
+        handle(property);
+    }
+}
+
 void PropertiesSystem::Subscribe(const PropertiesSystem::FOnChange& function)
 {
     for(Property* property : context()) {
@@ -108,18 +120,29 @@ void PropertiesSystem::Save(const QString& fileName, quint8 contextIndex)
 
 void PropertiesSystem::Clear()
 {
-    Q_ASSERT(currentType() != Global);
-    for(auto property : context()) {
+    Clear(currentContextIndex());
+}
+
+void PropertiesSystem::Clear(qint32 contextIndex)
+{
+    Q_ASSERT(contextIndex != Global);
+    auto& context = PropertiesSystem::context(contextIndex);
+    for(auto property : context) {
         delete property;
     }
-    context().clear();
+    context.clear();
+}
+
+bool PropertiesSystem::HasContext(qint32 contextIndex)
+{
+    return !context(contextIndex).isEmpty();
 }
 
 PropertiesSystem::FHandle& PropertiesSystem::Begin(Type type)
 {
     Q_ASSERT(type >= 0 && type < Max);
     currentHandle() = defaultHandle();
-    currentType() = type;
+    currentContextIndex() = type;
 
     return currentHandle();
 }
@@ -132,7 +155,7 @@ void PropertiesSystem::Begin(ThreadEventsContainer* thread, PropertiesSystem::Ty
 void PropertiesSystem::End()
 {
     currentHandle() = defaultHandle();
-    currentType() = Global;
+    currentContextIndex() = Global;
 }
 
 void PropertiesSystem::addProperty(const Name& path, Property* property) {
@@ -159,7 +182,7 @@ QHash<Name, Property*>& PropertiesSystem::context(quint8 contextIndex)
 
 QHash<Name, Property*>& PropertiesSystem::context()
 {
-    return *contexts()[currentType()];
+    return *contexts()[currentContextIndex()];
 }
 
 PropertiesSystem::FHandle PropertiesSystem::defaultHandle()
@@ -173,7 +196,7 @@ PropertiesSystem::FHandle& PropertiesSystem::currentHandle()
     return res;
 }
 
-PropertiesSystem::Type& PropertiesSystem::currentType()
+PropertiesSystem::Type& PropertiesSystem::currentContextIndex()
 {
     static Type res = Global; return res;
 }
