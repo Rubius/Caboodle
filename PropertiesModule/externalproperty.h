@@ -18,6 +18,8 @@ public:
 
 protected:
     virtual QVariant getValue() const Q_DECL_OVERRIDE { return _getter(); }
+    FGetter defaultGetter(T& ref) { return [&ref]{ return ref; }; }
+    FSetter defaultSetter(T& ref) { return [&ref](const T& value, const T&) { ref = value; }; }
 
 protected:
     FGetter _getter;
@@ -31,6 +33,11 @@ class TExternalProperty : public TExternalPropertyBase<T>
 public:
     TExternalProperty(const Name& path,const FGetter& getter, const FSetter& setter, const T& min, const T& max)
         : Super(path, getter, setter)
+        , _min(min)
+        , _max(max)
+    {}
+    TExternalProperty(const Name &path, T& ref, const T &min, const T &max)
+        : Super(path, defaultGetter(ref), defaultSetter(ref))
         , _min(min)
         , _max(max)
     {}
@@ -53,8 +60,20 @@ public:
     TExternalProperty(const Name& path,const FGetter& getter, const FSetter& setter)
         : Super(path, getter, setter)
     {}
+    TExternalProperty(const Name& path, QString& ref)
+        : Super(path, defaultGetter(ref), defaultSetter(ref))
+    {}
 protected:
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _setter(value.toString(), _getter()); }
+};
+
+class ExternalStdWStringProperty : public TExternalProperty<QString>
+{
+    typedef TExternalProperty<QString> Super;
+public:
+    ExternalStdWStringProperty(const Name& path, std::wstring& ref)
+        : Super(path, [&ref]{ return QString::fromStdWString(ref); }, [&ref](const QString& value, const QString&){ ref = value.toStdWString(); } )
+    {}
 };
 
 template<>
@@ -65,6 +84,10 @@ public:
     TExternalProperty(const Name& path,const FGetter& getter, const FSetter& setter)
         : Super(path, getter, setter)
     {}
+    TExternalProperty(const Name& path, QByteArray& ref)
+        : Super(path, defaultGetter(ref), defaultSetter(ref))
+    {}
+
 protected:
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _setter(value.toByteArray(), _getter()); }
 };
@@ -77,6 +100,9 @@ public:
     TExternalProperty(const Name& path, const FGetter& getter, const FSetter& setter)
         : Super(path, getter, setter)
     {}
+    TExternalProperty(const Name& path, bool& ref)
+        : Super(path, defaultGetter(ref), defaultSetter(ref))
+    {}
 
 protected:
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _setter(value.toBool(), _getter()); }
@@ -88,6 +114,10 @@ class ExternalNamedUIntProperty : public TExternalProperty<quint32>
 public:
     ExternalNamedUIntProperty(const Name& path, const FGetter& getter, const FSetter& setter)
         : Super(path, getter, setter, 0, 0)
+    {}
+    template<typename Enum>
+    ExternalNamedUIntProperty(const Name& path, Enum& ref)
+        : Super(path, defaultGetter(reinterpret_cast<quint32&>(ref)), defaultSetter(reinterpret_cast<quint32&>(ref)), 0, 0)
     {}
 
     void SetNames(const QStringList& names);
