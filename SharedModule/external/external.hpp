@@ -2,6 +2,7 @@
 #define SHARED_EXTERNAL_HPP
 
 #if defined __cplusplus
+
 #include "qtinlineevent.h"
 #include "qtobserver.h"
 #include "utils.h"

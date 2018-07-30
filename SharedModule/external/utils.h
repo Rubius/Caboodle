@@ -3,7 +3,7 @@
 
 #include <functional>
 
-#ifndef NO_WIDGETS_INTERFACE
+#ifndef NO_GUI
 
 #include <QAbstractItemModel>
 

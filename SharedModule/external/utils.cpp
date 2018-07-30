@@ -1,5 +1,5 @@
 #include "utils.h"
-#ifndef NO_WIDGETS_INTERFACE
+#ifndef NO_GUI
 #include <QAction>
 
 QAction* createAction(const QString& title, const std::function<void ()>& handle)

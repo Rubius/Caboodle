@@ -2,6 +2,7 @@
 #define PROCCESSFACTORY_H
 
 #include <string>
+#include <atomic>
 
 struct DescProccesValueState
 {

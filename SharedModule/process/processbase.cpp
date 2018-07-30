@@ -1,6 +1,5 @@
 #include "processbase.h"
 
-#include "SharedModule/threads/threadfunction.h"
 #include "processfactory.h"
 
 
@@ -59,13 +58,4 @@ bool ProcessBase::isProcessCanceled() const
 
 void ProcessBase::run()
 {
-}
-
-void ProcessBase::startAsyncAndDestroySelfAfterFinish(const FOnFinish& onFinish)
-{
-    ThreadFunction::Async([this, onFinish]{
-        this->run();
-        delete this;
-        onFinish();
-    });
 }

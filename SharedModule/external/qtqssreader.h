@@ -1,7 +1,7 @@
 #ifndef QTQSSREADER_H
 #define QTQSSREADER_H
 
-#ifndef NO_WIDGETS_INTERFACE
+#ifndef NO_GUI
 
 #include <QString>
 #include "SharedModule/shared_decl.h"

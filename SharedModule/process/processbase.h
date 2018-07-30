@@ -1,6 +1,7 @@
 #ifndef PROCCESSBASE_H
 #define PROCCESSBASE_H
 
+#include <functional>
 #include <memory>
 
 #include "iprocess.h"
@@ -26,11 +27,6 @@ public:
     ProcessBase();
     ~ProcessBase();
 
-    template<class T, typename ... Args>
-    static void CreateProccess(const FOnFinish& onFinish, Args ... args) {
-        (new T(args...))->startAsyncAndDestroySelfAfterFinish(onFinish);
-    }
-
 protected:
     void beginProcess(const wchar_t* title) final;
     void beginProcess(const wchar_t* title, int stepsCount) final;
@@ -40,9 +36,6 @@ protected:
     bool isProcessCanceled() const final;
 
     virtual void run();
-
-private:
-    void startAsyncAndDestroySelfAfterFinish(const FOnFinish& onFinish);
 
 private:
     std::unique_ptr<ProcessValue> _processValue;
