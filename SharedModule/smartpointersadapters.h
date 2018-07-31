@@ -12,6 +12,9 @@ public:
 
     ScopedPointer& operator=(T* ptr) { reset(ptr); return *this; }
 
+    T* get() { return Super::get(); }
+    const T* get() const { return Super::get(); }
+
     T* data() { return Super::get(); }
     const T* data() const { return Super::get(); }
 
