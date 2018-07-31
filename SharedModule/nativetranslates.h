@@ -1,11 +1,11 @@
 #ifndef NATIVETRANSLATES_H
 #define NATIVETRANSLATES_H
 
-#ifdef QT_C_TRANSLATES
+#ifndef NO_QT
 
 #include <QObject>
 #define TR_W(text) \
-    QObject::tr(text).toStdWString()
+    QObject::tr(text).toStdWString().c_str()
 #define TR(text) \
     QObject::tr(text)
 

@@ -6,19 +6,20 @@
 #ifdef NO_QT
 #undef QT_C_TRANSLATES
 
-struct DummyLogger
-{
-    template<typename T>
-    DummyLogger& operator<<(const T&) { return *this; }
-};
-
-#define qCInfo(void) DummyLogger()
-#define qCWarning(void) DummyLogger()
-#define qCCritical(void) DummyLogger()
-
+#include "smartpointersadapters.h"
 #include "process/processbase.h"
 #include "nativetranslates.h"
+#include "serialization/StreamBuffer.h"
+#include "serialization/stdserializer.h"
+#include "array.h"
+#include "stack.h"
+
 #else
+
+#include "smartpointersadapters.h"
+#include "serialization/StreamBuffer.h"
+#include "serialization/stdserializer.h"
+#include "serialization/qserializer.h"
 #include "array.h"
 #include "stack.h"
 #include "process/qprocessbase.h"
@@ -31,6 +32,7 @@ struct DummyLogger
 #include "shared_decl.h"
 #include "nativetranslates.h"
 #include "name.h"
+
 #endif
 
 #endif

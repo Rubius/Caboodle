@@ -16,8 +16,6 @@
 
 typedef qint32 count_t;
 
-#define NO_EXCEPT noexcept
-
 class QTextStream;
 
 class DirBinder
@@ -33,7 +31,7 @@ T clamp(const T& value, const T& min, const T& max) {
     return std::min(std::max(value, min), max);
 }
 
-namespace adapters{
+namespace adapters {
 
 template<typename It>
 class Range
@@ -65,35 +63,6 @@ Range<It> range(It begin, It end) {
 
 
 }
-
-template <typename T, typename Cleanup = QScopedPointerDeleter<T> >
-class ScopedPointer : public QScopedPointer<T, Cleanup>
-{
-    typedef QScopedPointer<T,Cleanup> Super;
-public:
-    ScopedPointer(T* p = nullptr) : Super(p) {}
-
-    ScopedPointer& operator=(T* ptr) { reset(ptr); return *this; }
-
-    T* data() { return Super::data(); }
-    const T* data() const { return Super::data(); }
-
-    const T* operator->() const { return Super::operator ->(); }
-    T* operator->() { return Super::operator ->(); }
-    const T& operator*() const { return Super::operator *(); }
-    T& operator*() { return Super::operator *(); }
-};
-
-template<class T>
-class SharedPointer : public QSharedPointer<T>
-{
-    typedef QSharedPointer<T> Super;
-public:
-    SharedPointer(T* p=nullptr) : Super(p) {}
-};
-
-template<class T>
-SharedPointer<T> make_shared(T* ptr) { return SharedPointer<T>(ptr); }
 
 struct CastablePtr;
 struct ConstCastablePtr{

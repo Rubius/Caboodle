@@ -1,14 +1,15 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
-#include <QTypeInfo>
 #include <memory>
-#include "shared_decl.h"
+#include <type_traits>
+
+#include "namingconvention.h"
 
 template<class T>
 class MiddleAlgoData {
 public:
-    MiddleAlgoData(qint32 reserve)
+    MiddleAlgoData(count_t reserve)
     {
         Alloc(reserve, 0);
     }
@@ -22,11 +23,11 @@ public:
         : _begin(nullptr)
         , _end(nullptr)
         , _first(nullptr)
-        , _count((qint32)args.size())
+        , _count(static_cast<count_t>(args.size()))
     {
         if(args.size()) {
-            Alloc((qint32)args.size(), 0);
-            MemMove(_first, args.begin(), (qint32)args.size());
+            Alloc(static_cast<count_t>(args.size()), 0);
+            MemMove(_first, args.begin(), static_cast<count_t>(args.size()));
         }
     }
     ~MiddleAlgoData()
@@ -164,7 +165,7 @@ public:
     void Debug(const char* msg="")
     {
         qDebug() << msg;
-        for(qint32 i : adapters::range(Begin(), End())) {
+        for(auto i : adapters::range(Begin(), End())) {
             qDebug() << i;
         }
     }
@@ -228,7 +229,7 @@ private:
 template<class T,template<typename> class SharedPtr = std::shared_ptr>
 class ArrayCommon
 {
-    Q_STATIC_ASSERT_X(!QTypeInfo<T>::isComplex, "Using complex objects restricts by code style use pointers instead");
+    static_assert(std::is_pod<T>::value, "Using complex objects is restricted by code style use pointers instead");
 public:
     typedef T value_type;
     typedef T* iterator;
@@ -277,7 +278,7 @@ public:
         return std::lower_bound(Begin(), End(), value);
     }
 
-    qint32 IndexOf(const T& value) const
+    count_t IndexOf(const T& value) const
     {
         return std::distance(begin(), std::find(begin(), end(), value));
     }
@@ -428,12 +429,12 @@ public:
     const_iterator begin() const { return Begin(); }
     const_iterator end() const { return End(); }
 
-    T& operator[](qint32 index)
+    T& operator[](count_t index)
     {
         detachCopy();
         return this->At(index);
     }
-    const T& operator[](qint32 index) const
+    const T& operator[](count_t index) const
     {
         return this->At(index);
     }
@@ -488,9 +489,9 @@ public:
         Super::Clear();
     }
 
-    template<typename ... Args> void resizeAndAllocate(qint32 size, Args ... args)
+    template<typename ... Args> void resizeAndAllocate(count_t size, Args ... args)
     {
-        qint32 old = this->Size();
+        count_t old = this->Size();
         if(size < old) {
             for(T* ptr : adapters::range(Begin() + size, End())) {
                 delete ptr;
