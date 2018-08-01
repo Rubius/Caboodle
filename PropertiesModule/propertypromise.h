@@ -15,6 +15,7 @@ public:
     const value_type& Native() const { return *_getter(); }
     bool IsValid() const { return _isValid(); }
 
+    const value_type& operator->() const { return *_getter(); }
     operator const value_type& () const { return *_getter(); }
     PropertyPromise& operator=(const value_type& value) { _setter(value); return *this; }
 

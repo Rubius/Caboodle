@@ -1,7 +1,6 @@
 #ifndef ATOMICFLAGS_H
 #define ATOMICFLAGS_H
 
-#include <Qt>
 #include <atomic>
 
 template<typename ValueType, typename Enum>
@@ -9,12 +8,12 @@ class Flags{
 public:
     typedef Enum enum_type;
 
-    inline qint32 ToInt() const
+    inline int32_t ToInt() const
     {
         return _value;
     }
 
-    constexpr Flags(qint32 i=0)
+    constexpr Flags(int32_t i=0)
         : _value(i)
     {}
     constexpr Flags(Enum e)
@@ -22,24 +21,24 @@ public:
     {}
 
 
-    void SetFlags(qint32 value)
+    void SetFlags(int32_t value)
     {
         _value = value;
     }
 
-    void AddFlags(qint32 flags)
+    void AddFlags(int32_t flags)
     {
         _value |= flags;
     }
-    void RemoveFlags(qint32 flags)
+    void RemoveFlags(int32_t flags)
     {
         _value &= ~flags;
     }
-    bool TestFlagsAll(qint32 flags) const
+    bool TestFlagsAll(int32_t flags) const
     {
         return (_value & flags) == flags;
     }
-    bool TestFlagsAtLeastOne(qint32 flags) const
+    bool TestFlagsAtLeastOne(int32_t flags) const
     {
         return (_value & flags);
     }
@@ -61,7 +60,7 @@ public:
         return _value & flag;
     }
 
-    void ChangeFromBoolean(qint32 flags, bool flag)
+    void ChangeFromBoolean(int32_t flags, bool flag)
     {
         flag ? AddFlags(flags) : RemoveFlags(flags);
     }
@@ -82,13 +81,13 @@ public:
         return *this;
     }
 
-    Flags& operator =(const qint32 e)
+    Flags& operator =(const int32_t e)
     {
         this->_value = e;
         return *this;
     }
 
-    operator qint32() const
+    operator int32_t() const
     {
         return this->_value;
     }
@@ -101,6 +100,6 @@ private:
 typedef Flags<std::atomic_int32_t, Enum> flags;
 
 #define DECL_FLAGS(flags, Enum) \
-typedef Flags<qint32, Enum> flags;
+typedef Flags<int32_t, Enum> flags;
 
 #endif // ATOMICFLAGS_H

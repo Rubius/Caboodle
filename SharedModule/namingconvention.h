@@ -5,14 +5,14 @@
 
 typedef int32_t count_t;
 
-#ifdef NO_QT
-
 struct DummyLogger
 {
     template<typename T>
     DummyLogger& operator<<(const T&) { return *this; }
     DummyLogger& operator<<(DummyLogger&) { return *this; }
 };
+
+#ifdef NO_QT
 
 #define qCInfo(void) DummyLogger()
 #define qCWarning(void) DummyLogger()
@@ -23,6 +23,7 @@ struct DummyLogger
 
 #include <assert.h>
 #define Q_ASSERT(condition) assert(condition)
+#define Q_ASSERT_X(condition, what, text) assert(condition)
 
 #else
 

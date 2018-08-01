@@ -7,6 +7,10 @@
 #include <deque>
 #include <list>
 
+#include "SharedModule/smartpointersadapters.h"
+#include "SharedModule/array.h"
+#include "SharedModule/stack.h"
+
 struct PlainData
 {
     PlainData(void* ptr, size_t count)
@@ -58,24 +62,30 @@ struct Serializer<std::wstring>
     }
 };
 
-template<typename T>
-struct Serializer<std::shared_ptr<T>>
-{
-    typedef std::shared_ptr<T> SmartPointer;
-    template<class Buffer>
-    static void Write(Buffer& buffer, const SmartPointer& pointer)
-    {
-        buffer << *pointer;
-    }
-    template<class Buffer>
-    static void Read(Buffer& buffer, SmartPointer& pointer)
-    {
-        if(pointer == nullptr) {
-            pointer.reset(new T());
-        }
-        buffer << *pointer;
-    }
+#define DECL_SMART_POINTER_SERIALIZER(type) \
+template<typename T> \
+struct Serializer<type<T>> \
+{ \
+    typedef type<T> SmartPointer; \
+    template<class Buffer> \
+    static void Write(Buffer& buffer, const SmartPointer& pointer) \
+    { \
+        buffer << *pointer; \
+    } \
+    template<class Buffer> \
+    static void Read(Buffer& buffer, SmartPointer& pointer) \
+    { \
+        if(pointer == nullptr) { \
+            pointer.reset(new T()); \
+        } \
+        buffer << *pointer; \
+    } \
 };
+
+DECL_SMART_POINTER_SERIALIZER(std::shared_ptr)
+DECL_SMART_POINTER_SERIALIZER(std::unique_ptr)
+DECL_SMART_POINTER_SERIALIZER(SharedPointer)
+DECL_SMART_POINTER_SERIALIZER(ScopedPointer)
 
 #define DECL_PRIMITIVE_SERIALIZER(type) \
 template<>\
@@ -125,6 +135,30 @@ struct Serializer<ContainerType<T>> \
     } \
 };
 
+#define DECL_SHARED_MODULE_CONTAINER_SERIALIZER(ContainerType) \
+template<typename T> \
+struct Serializer<ContainerType<T>> \
+{ \
+    template<class Buffer> \
+    static void Write(Buffer& buffer, const ContainerType<T>& container) \
+    { \
+        Serializer<int32_t>::Write(buffer, static_cast<int32_t>(container.Size())); \
+        for(auto* value : *const_cast<ContainerType<T>*>(&container)) { \
+            buffer << *value; \
+        } \
+    } \
+    template<class Buffer> \
+    static void Read(Buffer& buffer, ContainerType<T>& container) \
+    { \
+        int32_t size; \
+        Serializer<int32_t>::Read(buffer, size); \
+        container.Resize(size); \
+        for(auto* value : container) { \
+            buffer << *value; \
+        } \
+    } \
+};
+
 template<typename Key, typename Value>
 struct Serializer<std::map<Key,Value>>
 {
@@ -156,6 +190,9 @@ struct Serializer<std::map<Key,Value>>
 DECL_STD_CONTAINER_SERIALIZER(std::vector)
 DECL_STD_CONTAINER_SERIALIZER(std::deque)
 DECL_STD_CONTAINER_SERIALIZER(std::list)
+
+DECL_SHARED_MODULE_CONTAINER_SERIALIZER(StackPointers)
+DECL_SHARED_MODULE_CONTAINER_SERIALIZER(ArrayPointers)
 
 template<typename First, typename Second>
 struct Serializer<std::pair<First, Second>>

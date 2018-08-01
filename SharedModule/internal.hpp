@@ -13,6 +13,7 @@
 #include "serialization/stdserializer.h"
 #include "array.h"
 #include "stack.h"
+#include "flags.h"
 
 #else
 
