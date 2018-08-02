@@ -35,8 +35,6 @@ protected:
     void incrementProcess() final;
     bool isProcessCanceled() const final;
 
-    virtual void run();
-
 private:
     std::unique_ptr<ProcessValue> _processValue;
 };

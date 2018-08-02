@@ -17,6 +17,7 @@
 
 #else
 
+#include "defaultfactorybase.h"
 #include "smartpointersadapters.h"
 #include "serialization/StreamBuffer.h"
 #include "serialization/stdserializer.h"

@@ -55,7 +55,3 @@ bool ProcessBase::isProcessCanceled() const
 {
     return _processValue->IsCanceled();
 }
-
-void ProcessBase::run()
-{
-}
