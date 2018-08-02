@@ -223,6 +223,10 @@ public:
 
     virtual DelegateValue GetDelegateValue() const Q_DECL_OVERRIDE { return DelegateNamedUInt; }
     virtual const QVariant* GetDelegateData() const Q_DECL_OVERRIDE{ return &_names; }
+
+protected:
+    virtual QVariant getDisplayValue() const Q_DECL_OVERRIDE { return _names.value<QStringList>().at(_value); }
+
 private:
     QVariant _names;
 };
