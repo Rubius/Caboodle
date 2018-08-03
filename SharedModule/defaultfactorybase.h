@@ -3,6 +3,7 @@
 
 #include <QHash>
 #include <functional>
+#include "smartpointersadapters.h"
 
 template<class ObjectBase>
 class DefaultFactoryBase
@@ -12,6 +13,9 @@ class DefaultFactoryBase
 
 public:
     static ObjectBase* Create(const QString& extension);
+    static ScopedPointer<ObjectBase> CreateScoped(const QString& extension) {
+        return ScopedPointer<ObjectBase>(Create(extension));
+    }
 
     static bool IsSupport(const QString& extension) { return delegates().contains(extension); }
     static QString GetSupportedExtensions(const QString& suffix);
