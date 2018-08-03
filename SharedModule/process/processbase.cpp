@@ -13,7 +13,7 @@ ProcessBase::~ProcessBase()
 
 }
 
-void ProcessBase::beginProcess(const wchar_t* title)
+void ProcessBase::BeginProcess(const wchar_t* title)
 {
     if(_processValue != nullptr) {
         _processValue->setNextProcessExpected();
@@ -23,7 +23,7 @@ void ProcessBase::beginProcess(const wchar_t* title)
     _processValue->init(title);
 }
 
-void ProcessBase::beginProcess(const wchar_t* title, int stepsCount)
+void ProcessBase::BeginProcess(const wchar_t* title, int stepsCount)
 {
     if(_processValue != nullptr) {
         _processValue->setNextProcessExpected();
@@ -34,24 +34,24 @@ void ProcessBase::beginProcess(const wchar_t* title, int stepsCount)
     _processValue.reset(value);
 }
 
-void ProcessBase::setProcessTitle(const wchar_t* title)
+void ProcessBase::SetProcessTitle(const wchar_t* title)
 {
     _processValue->setTitle(title);
 }
 
-void ProcessBase::increaseProcessStepsCount(int stepsCount)
+void ProcessBase::IncreaseProcessStepsCount(int stepsCount)
 {
     if(auto determinate = _processValue->AsDeterminate()) {
         determinate->increaseStepsCount(stepsCount);
     }
 }
 
-void ProcessBase::incrementProcess()
+void ProcessBase::IncrementProcess()
 {
     _processValue->incrementStep();
 }
 
-bool ProcessBase::isProcessCanceled() const
+bool ProcessBase::IsProcessCanceled() const
 {
     return _processValue->IsCanceled();
 }

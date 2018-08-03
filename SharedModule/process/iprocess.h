@@ -1,17 +1,41 @@
 #ifndef IPROCESS_H
 #define IPROCESS_H
 
-class IProcess
+#include "SharedModule/namingconvention.h"
+
+class IProcess;
+
+class ProcessIncrementGuard
 {
 public:
-    virtual ~IProcess() {}
+    ProcessIncrementGuard(IProcess* process) Q_DECL_NOEXCEPT
+        : _process(process)
+    {
 
-    virtual void beginProcess(const wchar_t*) = 0;
-    virtual void beginProcess(const wchar_t*, int) = 0;
-    virtual void setProcessTitle(const wchar_t*) = 0;
-    virtual void increaseProcessStepsCount(int) = 0;
-    virtual void incrementProcess() = 0;
-    virtual bool isProcessCanceled() const = 0;
+    }
+    ~ProcessIncrementGuard();
+
+private:
+    IProcess* _process;
 };
 
+class IProcess
+{
+public:    
+    virtual ~IProcess() {}
+
+    virtual void BeginProcess(const wchar_t*) = 0;
+    virtual void BeginProcess(const wchar_t*, int) = 0;
+    virtual void SetProcessTitle(const wchar_t*) = 0;
+    virtual void IncreaseProcessStepsCount(int) = 0;
+    virtual void IncrementProcess() = 0;
+    virtual bool IsProcessCanceled() const = 0;
+};
+
+inline ProcessIncrementGuard::~ProcessIncrementGuard()
+{
+    _process->IncrementProcess();
+}
+
 #endif // IPROCESS_H
+

@@ -7,7 +7,6 @@ ProcessValue::ProcessValue(const FCallback& callback)
     , _isFinished(false)
     , _isNextProcessExpected(false)
 {
-
 }
 
 std::atomic_int& ProcessValue::depthCounter()

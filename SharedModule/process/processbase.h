@@ -11,12 +11,12 @@ class ProcessValue;
 class ProcessDummy : public IProcess
 {
 public:
-    virtual void beginProcess(const wchar_t*) final {}
-    virtual void beginProcess(const wchar_t*, int) final {}
-    virtual void setProcessTitle(const wchar_t*) final {}
-    virtual void increaseProcessStepsCount(int) final {}
-    virtual void incrementProcess() final {}
-    virtual bool isProcessCanceled() const final { return false; }
+    virtual void BeginProcess(const wchar_t*) final {}
+    virtual void BeginProcess(const wchar_t*, int) final {}
+    virtual void SetProcessTitle(const wchar_t*) final {}
+    virtual void IncreaseProcessStepsCount(int) final {}
+    virtual void IncrementProcess() final {}
+    virtual bool IsProcessCanceled() const final { return false; }
 };
 
 class ProcessBase : public IProcess
@@ -27,13 +27,12 @@ public:
     ProcessBase();
     ~ProcessBase();
 
-protected:
-    void beginProcess(const wchar_t* title) final;
-    void beginProcess(const wchar_t* title, int stepsCount) final;
-    void setProcessTitle(const wchar_t* title) final;
-    void increaseProcessStepsCount(int stepsCount) final;
-    void incrementProcess() final;
-    bool isProcessCanceled() const final;
+    void BeginProcess(const wchar_t* title) final;
+    void BeginProcess(const wchar_t* title, int stepsCount) final;
+    void SetProcessTitle(const wchar_t* title) final;
+    void IncreaseProcessStepsCount(int stepsCount) final;
+    void IncrementProcess() final;
+    bool IsProcessCanceled() const final;
 
 private:
     std::unique_ptr<ProcessValue> _processValue;

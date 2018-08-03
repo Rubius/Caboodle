@@ -1,16 +1,16 @@
 #include "qprocessbase.h"
 
-void QProcessBase::beginProcess(const QString& title)
+void QProcessBase::BeginProcess(const QString& title)
 {
-    Super::beginProcess(title.toStdWString().c_str());
+    Super::BeginProcess(title.toStdWString().c_str());
 }
 
-void QProcessBase::beginProcess(const QString& title, int stepsCount)
+void QProcessBase::BeginProcess(const QString& title, int stepsCount)
 {
-    Super::beginProcess(title.toStdWString().c_str(), stepsCount);
+    Super::BeginProcess(title.toStdWString().c_str(), stepsCount);
 }
 
-void QProcessBase::setProcessTitle(const QString& title)
+void QProcessBase::SetProcessTitle(const QString& title)
 {
-    Super::setProcessTitle(title.toStdWString().c_str());
+    Super::SetProcessTitle(title.toStdWString().c_str());
 }

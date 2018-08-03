@@ -8,13 +8,12 @@
 class QProcessBase : public ProcessBase
 {
     typedef ProcessBase Super;
-protected:
+public:
     QProcessBase(){}
 
-public:
-    void beginProcess(const QString& title);
-    void beginProcess(const QString& title, int stepsCount);
-    void setProcessTitle(const QString& title);
+    void BeginProcess(const QString& title);
+    void BeginProcess(const QString& title, int stepsCount);
+    void SetProcessTitle(const QString& title);
 };
 
 #endif // QPROCESSBASE_H

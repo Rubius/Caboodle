@@ -14,6 +14,7 @@ public:
     static ObjectBase* Create(const QString& extension);
 
     static bool IsSupport(const QString& extension) { return delegates().contains(extension); }
+    static QString GetSupportedExtensions(const QString& suffix);
 
 protected:
     static void assosiate(const QString& formats, const ImporterCreator& importerCreator);
@@ -34,6 +35,18 @@ ObjectBase* DefaultFactoryBase<ObjectBase>::Create(const QString& fileExtension)
          return nullptr;
     }
     return find.value()();
+}
+
+template<class ObjectBase>
+QString DefaultFactoryBase<ObjectBase>::GetSupportedExtensions(const QString& suffix)
+{
+    QString result;
+    auto it = delegates().begin();
+    auto e = delegates().end();
+    for(; it != e; it++) {
+        result += suffix + it.key() + " ";
+    }
+    return result;
 }
 
 template<class ObjectBase>

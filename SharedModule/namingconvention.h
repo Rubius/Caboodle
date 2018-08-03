@@ -21,6 +21,8 @@ struct DummyLogger
 #define Q_DECL_OVERRIDE override
 #define Q_DECL_NOEXCEPT noexcept
 
+#define Q_UNUSED(x) (void)x;
+
 #include <assert.h>
 #define Q_ASSERT(condition) assert(condition)
 #define Q_ASSERT_X(condition, what, text) assert(condition)
