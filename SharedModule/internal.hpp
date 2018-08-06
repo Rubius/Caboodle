@@ -28,7 +28,7 @@
 #include "process/processbase.h"
 #include "threads/threadcomputingbase.h"
 #include "threads/threadeventshelper.h"
-#include "threads/threadfunction.h"
+#include "threads/ThreadFunction/threadfunction.h"
 #include "flags.h"
 #include "profile_utils.h"
 #include "shared_decl.h"

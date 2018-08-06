@@ -89,7 +89,7 @@ public:
     const T* Ptr() const { return &_value; }
     operator const T&() const { return _value; }
 
-    template<class T2> T2 Cast() const { return (T2)_value; }
+    template<class T2> const T2& Cast() const { return (const T2&)_value; }
 
 protected:
     T _value;
@@ -154,6 +154,9 @@ public:
     TProperty<QString>(const Name& path, const QString& initial)
         : TStdPropertyBase<QString>(path, initial)
     {}
+
+    TProperty<QString>& operator=(const QString& value) { this->SetValue(value); return *this; }
+
 protected:
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { this->_value = value.toString(); }
 };
