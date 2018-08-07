@@ -1,8 +1,9 @@
 #include "MemoryManager.h"
+#include <QDebug>
 
-QMap<size_t,qint32> MemoryManager::constructed;
-QMap<size_t,qint32> MemoryManager::destroyed;
-QMap<size_t, const char*> MemoryManager::transcription;
+QHash<size_t,qint32> MemoryManager::constructed;
+QHash<size_t,qint32> MemoryManager::destroyed;
+QHash<size_t, const char*> MemoryManager::transcription;
 
 qint32 MemoryManager::shouldBe(size_t index)
 {
@@ -17,7 +18,7 @@ const char *MemoryManager::typeName(size_t _type)
 void MemoryManager::MakeMemoryReport()
 {
     qDebug() << "----------------------------MemoryReport------------------------";
-    QMapIterator<size_t,qint32> i(constructed);
+    QHashIterator<size_t,qint32> i(constructed);
     while(i.hasNext()){
         i.next();
         if(shouldBe(i.key())){

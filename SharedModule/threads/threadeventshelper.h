@@ -5,6 +5,7 @@
 #include <QMutex>
 #include <QHash>
 #include <queue>
+#include <functional>
 #include "SharedModule/name.h"
 
 class ThreadEvent
@@ -41,6 +42,7 @@ class ThreadEventsContainer
 public:
     typedef std::function<void ()> FOnPause;
     ThreadEventsContainer();
+    virtual ~ThreadEventsContainer() = default;
 
     void Pause(const FOnPause& onPause);
     void Continue();

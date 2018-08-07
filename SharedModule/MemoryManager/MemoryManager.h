@@ -1,7 +1,7 @@
 #ifndef TMEMORYMANAGER_H
 #define TMEMORYMANAGER_H
 
-#include <QMap>
+#include <QHash>
 #include <QString>
 #include <typeinfo>
 
@@ -9,9 +9,9 @@ template<class T> class MemorySpy;
 
 class MemoryManager {
 private:
-    static QMap<size_t,const char*> transcription;
-    static QMap<size_t,qint32> constructed;
-    static QMap<size_t,qint32> destroyed;
+    static QHash<size_t,const char*> transcription;
+    static QHash<size_t,qint32> constructed;
+    static QHash<size_t,qint32> destroyed;
 
     static qint32 shouldBe(size_t index);
     static const char* typeName(size_t _type);
@@ -38,7 +38,7 @@ public:
     }
 };
 
-#if !defined QT_NO_DEBUG && !defined NO_QT
+#ifdef QT_PROFILE
 #define ATTACH_MEMORY_SPY(x) : MemorySpy<x>
 #define ATTACH_MEMORY_SPY_2(x) , MemorySpy<x>
 #else

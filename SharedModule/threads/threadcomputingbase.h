@@ -12,7 +12,7 @@ class ThreadComputingBase : public QThread, public ThreadEventsContainer
     typedef QThread Super;
 public:
     ThreadComputingBase(qint32 idealFrameTimeMsecs = 30, QObject* parent = nullptr);
-    virtual ~ThreadComputingBase();
+    virtual ~ThreadComputingBase() Q_DECL_OVERRIDE;
 
     void Start();
     void Quit();

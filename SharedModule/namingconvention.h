@@ -27,6 +27,9 @@ struct DummyLogger
 #define Q_ASSERT(condition) assert(condition)
 #define Q_ASSERT_X(condition, what, text) assert(condition)
 
+#define ATTACH_MEMORY_SPY(x)
+#define ATTACH_MEMORY_SPY_2(x)
+
 #else
 
 #include <Qt>
