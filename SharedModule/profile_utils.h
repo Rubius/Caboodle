@@ -1,7 +1,8 @@
 #ifndef PROFILE_UTILS_H
 #define PROFILE_UTILS_H
 
-#include "internal.hpp"
+#include "stack.h"
+#include "smartpointersadapters.h"
 
 #ifndef CLOCKS_COUNT
 #define CLOCKS_COUNT 30
@@ -84,12 +85,12 @@ private:
 #define COMBINE1(X,Y) X##Y  // helper macro
 #define COMBINE(X,Y) COMBINE1(X,Y)
 
-#if !defined(QT_NO_DEBUG) || defined(PROFILE_BUILD)
-#define __PERFOMANCE__ \
+#if !defined(QT_NO_DEBUG) || defined(QT_PROFILE)
+#define __PERFORMANCE__ \
     static PerformanceClocks COMBINE(pClock,__LINE__)(__FUNCTION__, __FILE__, __LINE__); \
     auto COMBINE(pClock,__LINE__)##guard = COMBINE(pClock,__LINE__).Clock();
 #else
-#define __PERFOMANCE__
+#define __PERFORMANCE__
 #endif
 
 #endif // PROFILE_UTILS_H

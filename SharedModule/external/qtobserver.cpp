@@ -18,6 +18,31 @@ void QtObserver::Add(const FCondition& condition, const FHandle& handle)
     this->_observables.Append(new Observable{ condition, handle });
 }
 
+void QtObserver::AddFilePtrObserver(const QString* fileName, const QtObserver::FHandle& handle)
+{
+    Add([fileName, this]{
+        QFileInfo fi(*fileName);
+        if(fi.exists()) {
+            qint64 currentLastModified = fi.lastModified().toMSecsSinceEpoch();
+            return testValue(fileName, currentLastModified);
+        }
+        return false;
+    }, handle);
+}
+
+void QtObserver::AddFilePtrObserver(const QString* dir, const QString* file, const QtObserver::FHandle& handle)
+{
+    Add([dir,file,this]{
+        QFileInfo fi(*file);
+        DirBinder dbinder(*dir);
+        if(fi.exists()) {
+            qint64 currentLastModified = fi.lastModified().toMSecsSinceEpoch();
+            return testValue(file, currentLastModified);
+        }
+        return false;
+    }, handle);
+}
+
 void QtObserver::AddFileObserver(const QString& file, const FHandle& handle)
 {
     Add([file, this]{

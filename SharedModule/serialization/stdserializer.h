@@ -62,6 +62,24 @@ struct Serializer<std::wstring>
     }
 };
 
+#define DECL_POINTER_SERIALIZER(type) \
+template<> \
+struct Serializer<type*> \
+{ \
+    typedef type* Pointer; \
+    template<class Buffer> \
+    static void Write(Buffer& buffer, const Pointer& pointer) \
+    { \
+        buffer << *pointer; \
+    } \
+    template<class Buffer> \
+    static void Read(Buffer& buffer, Pointer& pointer) \
+    { \
+        pointer = new type(); \
+        buffer << *pointer; \
+    } \
+};
+
 #define DECL_SMART_POINTER_SERIALIZER(type) \
 template<typename T> \
 struct Serializer<type<T>> \

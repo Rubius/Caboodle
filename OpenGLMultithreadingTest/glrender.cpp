@@ -48,5 +48,40 @@ void GLRender::Draw()
     glVertex2d(p - 200.5f, -200.5f);
     glEnd();
 
+    glBegin(GL_TRIANGLE_STRIP);
+    glVertex3f(100.f, 0.f, 0.f);
+    glVertex3f(0.f, 0.f, 0.f);
+    glVertex3f(100.f,0.f,100.f);
+    glVertex3f(0.f,0.f,100.f);
+
+    glVertex3f(100.f,200.f,100.f);
+    glVertex3f(0.f,200.f,100.f);
+
+    glVertex3f(100.f, 200.f, 0.f);
+    glVertex3f(0.f, 200.f, 0.f);
+    glVertex3f(100.f, 0.f, 0.f);
+    glVertex3f(0.f, 0.f, 0.f);
+    // Degenerate
+    glVertex3f(0.f, 0.f, 0.f);
+    glVertex3f(0.f, 0.f, 100.f);
+    // Forward pike
+    glColor3f(1.f,0.f,0.f);
+    glVertex3f(0.f, 0.f, 0.f);
+    glVertex3f(-100.f, 100.f, 50.f);
+    glVertex3f(0.f, 0.f, 100.f);
+    glColor3f(1.f,0.f,1.f);
+    glVertex3f(-100.f, 100.f, 50.f);
+    glVertex3f(0.f, 200.f, 100.f);
+    glColor3f(1.f,1.f,0.f);
+    glVertex3f(-100.f, 100.f, 50.f);
+    glVertex3f(0.f, 200.f, 0.f);
+    glColor3f(1.f,1.f,1.f);
+    glVertex3f(-100.f, 100.f, 50.f);
+    glVertex3f(0.f, 0.f, 0.f);
+    // Back pike like forward
+
+
+    glEnd();
+
     emit imageUpdated();
 }

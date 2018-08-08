@@ -17,7 +17,6 @@ public:
     {}
 
 protected:
-    virtual QVariant getValue() const Q_DECL_OVERRIDE { return _getter(); }
     FGetter defaultGetter(T& ref) { return [&ref]{ return ref; }; }
     FSetter defaultSetter(T& ref) { return [&ref](const T& value, const T&) { ref = value; }; }
 
@@ -47,6 +46,7 @@ public:
 
     // Property interface
 protected:
+    virtual QVariant getValue() const Q_DECL_OVERRIDE { return _getter(); }
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _setter(value.toDouble(), _getter()); }
     T _min;
     T _max;
@@ -64,7 +64,24 @@ public:
         : Super(path, defaultGetter(ref), defaultSetter(ref))
     {}
 protected:
+    virtual QVariant getValue() const Q_DECL_OVERRIDE { return _getter(); }
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _setter(value.toString(), _getter()); }
+};
+
+template<>
+class TExternalProperty<Name> : public TExternalPropertyBase<Name>
+{
+    typedef TExternalPropertyBase<Name> Super;
+public:
+    TExternalProperty(const Name& path,const FGetter& getter, const FSetter& setter)
+        : Super(path, getter, setter)
+    {}
+    TExternalProperty(const Name& path, Name& ref)
+        : Super(path, defaultGetter(ref), defaultSetter(ref))
+    {}
+protected:
+    virtual QVariant getValue() const Q_DECL_OVERRIDE { return _getter().AsString(); }
+    virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _setter(Name(value.toString()), _getter()); }
 };
 
 class ExternalStdWStringProperty : public TExternalProperty<QString>
@@ -89,6 +106,7 @@ public:
     {}
 
 protected:
+    virtual QVariant getValue() const Q_DECL_OVERRIDE { return _getter(); }
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _setter(value.toByteArray(), _getter()); }
 };
 
@@ -105,6 +123,7 @@ public:
     {}
 
 protected:
+    virtual QVariant getValue() const Q_DECL_OVERRIDE { return _getter(); }
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _setter(value.toBool(), _getter()); }
 };
 
@@ -131,14 +150,36 @@ private:
     QVariant _names;
 };
 
+class ExternalTextFileNameProperty : public TExternalProperty<QString>
+{
+public:
+    ExternalTextFileNameProperty(const Name& path, QString& ref)
+        : TExternalProperty(path, ref)
+    {}
+    virtual DelegateValue GetDelegateValue() const Q_DECL_OVERRIDE { return DelegateFileName; }
+};
+
 // Externals
 typedef TExternalProperty<bool> ExternalBoolProperty;
 typedef TExternalProperty<double> ExternalDoubleProperty;
 typedef TExternalProperty<float> ExternalFloatProperty;
 typedef TExternalProperty<qint32> ExternalIntProperty;
 typedef TExternalProperty<quint32> ExternalUIntProperty;
+typedef TExternalProperty<Name> ExternalNameProperty;
 typedef TExternalProperty<QString> ExternalStringProperty;
 typedef TExternalProperty<QUrl> ExternalUrlProperty;
 typedef TExternalProperty<QByteArray> ExternalByteArrayProperty;
+
+struct ExternalVector3FProperty
+{
+    ExternalFloatProperty X;
+    ExternalFloatProperty Y;
+    ExternalFloatProperty Z;
+
+    ExternalVector3FProperty(const Name& path, Vector3F& vector);
+
+    void Subscribe(const Property::FOnChange& handle);
+    void SetReadOnly(bool readOnly);
+};
 
 #endif // EXTERNALPROPERTY_H

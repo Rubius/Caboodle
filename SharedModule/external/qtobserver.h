@@ -28,6 +28,8 @@ public:
     QtObserver(qint32 msInterval, QObject* parent=0);
 
     void Add(const FCondition& condition, const FHandle& handle);
+    void AddFilePtrObserver(const QString* fileName, const FHandle& handle);
+    void AddFilePtrObserver(const QString* dir, const QString* file, const FHandle& handle);
     void AddFileObserver(const QString& file, const FHandle& handle);
     void AddFileObserver(const QString& dir, const QString& file, const FHandle& handle);
     void AddFloatObserver(const float* value, const FHandle& handle); // Where to use? Marked as deprecated. Use Properties Rx system instead

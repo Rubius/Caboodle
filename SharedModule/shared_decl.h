@@ -148,11 +148,6 @@ Q_DECLARE_LOGGING_CATEGORY(LC_SYSTEM)
 #define DEBUG_BUILD
 #endif
 
-#define ASSURE(expression, message, what) \
-    if(!expression) { \
-        tDebug << __FUNCTION__ << message << ": " << what; \
-    }
-
 //========================================================DEBUG ONLY================================================
 
 #ifdef _MSC_VER

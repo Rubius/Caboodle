@@ -5,6 +5,6 @@ SUBDIRS += \
 #    FlexFluidRefactoring \
 #    PropertiesSystem \
 #    ResoursesModule \
-    GameEngine
-#    OpenGLMultithreadingTest
+#    GameEngine
+    OpenGLMultithreadingTest
 

@@ -31,10 +31,8 @@ GtView::GtView(QWidget* parent, Qt::WindowFlags flags)
 #include <QOpenGLShaderProgram>
 void GtView::initializeGL()
 {
-    LOGOUT;
-
     if(!initializeOpenGLFunctions()) {
-        log.Error() << "Cannot initialize opengl functions";
+        qCInfo(LC_SYSTEM) << "Cannot initialize opengl functions";
         return;
     }
 
