@@ -23,6 +23,7 @@ void GLRender::Initialize()
 {
     initializeOpenGLFunctions();
 
+    glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glPointSize(10.f);
     glClearColor(1.f, 0.f, 0.f, 1.f);
@@ -49,36 +50,44 @@ void GLRender::Draw()
     glEnd();
 
     glBegin(GL_TRIANGLE_STRIP);
-    glVertex3f(100.f, 0.f, 0.f);
     glVertex3f(0.f, 0.f, 0.f);
-    glVertex3f(100.f,0.f,100.f);
+    glVertex3f(100.f, 0.f, 0.f);
     glVertex3f(0.f,0.f,100.f);
+    glVertex3f(100.f,0.f,100.f);
 
-    glVertex3f(100.f,200.f,100.f);
     glVertex3f(0.f,200.f,100.f);
+    glVertex3f(100.f,200.f,100.f);
 
-    glVertex3f(100.f, 200.f, 0.f);
     glVertex3f(0.f, 200.f, 0.f);
+    glVertex3f(100.f, 200.f, 0.f);
+
+    glVertex3f(0.f, 0.f, 0.f);
     glVertex3f(100.f, 0.f, 0.f);
-    glVertex3f(0.f, 0.f, 0.f);
     // Degenerate
-    glVertex3f(0.f, 0.f, 0.f);
+    glVertex3f(100.f, 0.f, 0.f);
     glVertex3f(0.f, 0.f, 100.f);
     // Forward pike
-    glColor3f(1.f,0.f,0.f);
+    glColor3f(0.f,0.f,0.f);
+    glVertex3f(0.f, 0.f, 100.f);
+    glVertex3f(-100.f, 100.f, 50.f);
+
+
+    glColor3f(1.f,0.f,1.f);
     glVertex3f(0.f, 0.f, 0.f);
+    glVertex3f(-100.f, 100.f, 50.f);
+
+
+    glColor3f(1.f,1.f,0.f);
+
+    glVertex3f(0.f, 200.f, 0.f);
+    glVertex3f(-100.f, 100.f, 50.f);
+
+
+    glColor3f(1.f,1.f,1.f);
+    glVertex3f(0.f, 200.f, 100.f);
     glVertex3f(-100.f, 100.f, 50.f);
     glVertex3f(0.f, 0.f, 100.f);
-    glColor3f(1.f,0.f,1.f);
-    glVertex3f(-100.f, 100.f, 50.f);
-    glVertex3f(0.f, 200.f, 100.f);
-    glColor3f(1.f,1.f,0.f);
-    glVertex3f(-100.f, 100.f, 50.f);
-    glVertex3f(0.f, 200.f, 0.f);
-    glColor3f(1.f,1.f,1.f);
-    glVertex3f(-100.f, 100.f, 50.f);
-    glVertex3f(0.f, 0.f, 0.f);
-    // Back pike like forward
+//    // Back pike like forward
 
 
     glEnd();
