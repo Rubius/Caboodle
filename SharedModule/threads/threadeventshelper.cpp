@@ -21,9 +21,13 @@ TagThreadEvent::TagThreadEvent(TagThreadEvent::TagsCache* tagsCache, const Name&
     tagsCache->insert(tag, this);
 }
 
-void TagThreadEvent::call()
+void TagThreadEvent::removeTag()
 {
     _tagsCache->remove(_tag);
+}
+
+void TagThreadEvent::call()
+{
     _handler();
 }
 
@@ -94,6 +98,7 @@ void ThreadEventsContainer::callEvents()
             QMutexLocker locker(&_eventsMutex);
             event = _events.front();
             _events.pop();
+            event->removeTag();
         }
         event->call();
     }
@@ -115,6 +120,7 @@ void ThreadEventsContainer::callPauseableEvents()
             while(_isPaused) {
                 _eventsPaused.wait(&_eventsMutex);
             }
+            event->removeTag();
         }
         event->call();
     }

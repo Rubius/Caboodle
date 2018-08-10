@@ -16,10 +16,13 @@ public:
     ThreadEvent(FEventHandler  handler);
     virtual ~ThreadEvent() {}
 
+
+
 protected:
     friend class ThreadEventsContainer;
     FEventHandler _handler;
 
+    virtual void removeTag() {}
     virtual void call();
 };
 
@@ -30,6 +33,7 @@ public:
     TagThreadEvent(TagsCache* tagsCache, const Name& tag, FEventHandler handler);
 
 protected:
+    virtual void removeTag() Q_DECL_OVERRIDE;
     virtual void call() Q_DECL_OVERRIDE;
 
 private:
