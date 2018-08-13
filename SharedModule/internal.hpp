@@ -4,7 +4,6 @@
 #if defined __cplusplus
 
 #ifdef NO_QT
-#undef QT_C_TRANSLATES
 
 #include "smartpointersadapters.h"
 #include "Process/processbase.h"

@@ -1,4 +1,3 @@
-
 DEFINES += NO_QT
 
 PRECOMPILED_HEADER += $$PWD/internal.hpp

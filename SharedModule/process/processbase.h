@@ -27,12 +27,12 @@ public:
     ProcessBase();
     ~ProcessBase();
 
-    void BeginProcess(const wchar_t* title) final;
-    void BeginProcess(const wchar_t* title, int stepsCount) final;
-    void SetProcessTitle(const wchar_t* title) final;
-    void IncreaseProcessStepsCount(int stepsCount) final;
-    void IncrementProcess() final;
-    bool IsProcessCanceled() const final;
+    void BeginProcess(const wchar_t* title) override;
+    void BeginProcess(const wchar_t* title, int stepsCount) override;
+    void SetProcessTitle(const wchar_t* title) override;
+    void IncreaseProcessStepsCount(int stepsCount) override;
+    void IncrementProcess() override;
+    bool IsProcessCanceled() const override;
 
 private:
     std::unique_ptr<ProcessValue> _processValue;
