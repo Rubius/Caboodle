@@ -4,10 +4,11 @@
 #include <QThread>
 
 #include "threadeventshelper.h"
+#include "SharedModule/smartpointersadapters.h"
 
 class TimerClocks;
 
-class ThreadComputingBase : public QThread, public ThreadEventsContainer
+class _Export ThreadComputingBase : public QThread, public ThreadEventsContainer
 {
     typedef QThread Super;
 public:

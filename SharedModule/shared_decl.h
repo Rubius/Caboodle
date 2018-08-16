@@ -18,7 +18,7 @@ typedef qint32 count_t;
 
 class QTextStream;
 
-class DirBinder
+class _Export DirBinder
 {
     QString old_path;
 public:
@@ -141,8 +141,8 @@ struct CastablePtr{
 
 Q_DECLARE_TYPEINFO(CastablePtr, Q_PRIMITIVE_TYPE);
 
-Q_DECLARE_LOGGING_CATEGORY(LC_UI)
-Q_DECLARE_LOGGING_CATEGORY(LC_SYSTEM)
+_Export Q_DECLARE_LOGGING_CATEGORY(LC_UI)
+_Export Q_DECLARE_LOGGING_CATEGORY(LC_SYSTEM)
 
 #ifndef QT_NO_DEBUG
 #define DEBUG_BUILD

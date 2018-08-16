@@ -3,6 +3,9 @@
 
 #include <string>
 #include <atomic>
+#include <functional>
+
+#include <SharedModule/internal.hpp>
 
 struct DescProccesValueState
 {
@@ -14,7 +17,7 @@ struct DescProccesValueState
     bool IsShouldStayVisible() const { return !IsFinished || IsNextProcessExpected; }
 };
 
-class ProcessValue
+class _Export ProcessValue
 {
     typedef std::function<void (ProcessValue*)> FCallback;
     ProcessValue(const FCallback& callback);
@@ -83,7 +86,7 @@ private:
     int _stepsCount;
 };
 
-class ProcessFactory
+class _Export ProcessFactory
 {
     ProcessFactory();
 public:

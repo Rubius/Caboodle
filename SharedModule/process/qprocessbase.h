@@ -5,7 +5,7 @@
 
 #include "processbase.h"
 
-class QProcessBase : public ProcessBase
+class _Export QProcessBase : public ProcessBase
 {
     typedef ProcessBase Super;
 public:

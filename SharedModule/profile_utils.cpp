@@ -2,7 +2,7 @@
 #include <chrono>
 
 #include "timer.h"
-#include "stack.h"
+#include "internal.hpp"
 
 TimerClocks::TimerClocks()
     : _timer(new Timer)

@@ -2,8 +2,7 @@
 
 #include <QMutexLocker>
 
-#include "SharedModule/profile_utils.h"
-#include "SharedModule/timer.h"
+#include "SharedModule/internal.hpp"
 
 ThreadComputingBase::ThreadComputingBase(qint32 idealFrameTimeMsecs, QObject* parent)
     : QThread(parent)

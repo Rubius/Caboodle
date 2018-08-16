@@ -4,9 +4,9 @@
 #ifndef NO_GUI
 
 #include <QString>
-#include "SharedModule/shared_decl.h"
+#include "SharedModule/internal.hpp"
 
-class QtQSSReader
+class _Export QtQSSReader
 {
     QString _fileName;
     ScopedPointer<class QtObserver> _observer;

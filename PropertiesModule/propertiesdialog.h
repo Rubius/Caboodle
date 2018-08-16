@@ -3,9 +3,9 @@
 
 #include <QDialog>
 
-#include <PropertiesModule/internal.hpp>
+#include "PropertiesModule/internal.hpp"
 
-class PropertiesDialog : public QDialog
+class _Export PropertiesDialog : public QDialog
 {
     typedef QDialog Super;
     typedef std::function<void ()> StdHandle;

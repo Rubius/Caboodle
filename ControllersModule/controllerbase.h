@@ -18,7 +18,7 @@ class QWheelEvent;
 class QMenu;
 class DrawEngineBase;
 
-class ControllerBase : public QObject
+class _Export ControllerBase : public QObject
 {
 protected:
     ControllersContainer* _container;

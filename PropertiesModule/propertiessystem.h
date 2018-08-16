@@ -5,12 +5,14 @@
 #include <QHash>
 #include <QVariant>
 
+#include <SharedModule/internal.hpp>
+
 class Property;
 class Name;
 class StateProperty;
 template<class T> class PropertyPromise;
 
-class PropertiesSystem
+class _Export PropertiesSystem
 {
 public:
     enum Type {

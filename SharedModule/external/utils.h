@@ -6,10 +6,11 @@
 #ifndef NO_GUI
 
 #include <QAbstractItemModel>
+#include "SharedModule/internal.hpp"
 
-void forEachModelIndex(QAbstractItemModel* model, QModelIndex parent, const std::function<void (const QModelIndex& index)>& function);
-class QAction* createAction(const QString& title, const std::function<void ()>& handle);
-class QAction* createAction(const QString &title, const std::function<void (QAction*)> &handle);
+_Export void forEachModelIndex(QAbstractItemModel* model, QModelIndex parent, const std::function<void (const QModelIndex& index)>& function);
+_Export class QAction* createAction(const QString& title, const std::function<void ()>& handle);
+_Export class QAction* createAction(const QString &title, const std::function<void (QAction*)> &handle);
 
 #endif
 

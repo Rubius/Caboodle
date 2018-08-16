@@ -7,7 +7,7 @@
 #include <SharedModule/internal.hpp>
 #include <SharedGuiModule/decl.h> // Vector3f
 
-class Property {
+class _Export Property {
 public:
     typedef std::function<void ()> FSetter;
     typedef std::function<void (const FSetter&)> FHandle;
@@ -214,7 +214,7 @@ public:
     virtual DelegateValue GetDelegateValue() const Q_DECL_OVERRIDE { return DelegateFileName; }
 };
 
-class NamedUIntProperty : public TProperty<quint32>
+class _Export NamedUIntProperty : public TProperty<quint32>
 {
     typedef TProperty<quint32> Super;
 public:
@@ -244,7 +244,7 @@ typedef TProperty<QString> StringProperty;
 typedef TProperty<QUrl> UrlProperty;
 typedef TProperty<QByteArray> ByteArrayProperty;
 
-class Vector3FProperty
+class _Export Vector3FProperty
 {
 public:
     FloatProperty X;

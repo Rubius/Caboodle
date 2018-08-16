@@ -2,12 +2,12 @@
 #define PROPERTIESMODEL_H
 #include <QAbstractItemModel>
 #include <functional>
-#include "SharedModule/stack.h"
+#include "SharedModule/internal.hpp"
 
 class Property;
 class Name;
 
-class PropertiesModel : public QAbstractItemModel
+class _Export PropertiesModel : public QAbstractItemModel
 {
     Q_OBJECT
     Q_PROPERTY(qint32 contextIndex READ GetContextIndex WRITE SetContextIndex NOTIFY contextIndexChanged)

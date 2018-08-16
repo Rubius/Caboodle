@@ -31,6 +31,7 @@
 #include "Threads/ThreadFunction/threadfunction.h"
 #include "flags.h"
 #include "profile_utils.h"
+#include "timer.h"
 #include "shared_decl.h"
 #include "nativetranslates.h"
 #include "name.h"

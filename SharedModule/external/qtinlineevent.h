@@ -4,7 +4,9 @@
 #include <QEvent>
 #include <functional>
 
-class QtInlineEvent : public QEvent
+#include "SharedModule/shared_decl.h"
+
+class _Export QtInlineEvent : public QEvent
 {
 public:
     typedef std::function<void ()> Function;

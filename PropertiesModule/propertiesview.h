@@ -6,7 +6,7 @@
 #include <QTreeView>
 #include "property.h"
 
-class PropertiesView : public QTreeView
+class _Export PropertiesView : public QTreeView
 {
     Q_OBJECT
     typedef QTreeView Super;

@@ -41,7 +41,7 @@ private:
     TagsCache* _tagsCache;
 };
 
-class ThreadEventsContainer
+class _Export ThreadEventsContainer
 {
 public:
     typedef std::function<void ()> FOnPause;

@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QWaitCondition>
+#include <QMutex>
 
 #include "SharedModule/smartpointersadapters.h"
 #include "threadfunction.h"

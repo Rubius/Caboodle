@@ -3,6 +3,7 @@
 
 #include "stack.h"
 #include "smartpointersadapters.h"
+#include "shared_decl.h"
 
 #ifndef CLOCKS_COUNT
 #define CLOCKS_COUNT 30
@@ -26,7 +27,7 @@ private:
     double _nsecs;
 };
 
-class TimerClocks
+class _Export TimerClocks
 {
 public:
     class Guard
@@ -67,7 +68,7 @@ private:
 
 template<class T, template<typename> class Ptr> class Stack;
 
-class PerformanceClocks : public TimerClocks
+class _Export PerformanceClocks : public TimerClocks
 {
     const char* _function;
     const char* _file;

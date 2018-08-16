@@ -4,8 +4,7 @@
 #include <QObject>
 #include <functional>
 
-#include <QVector>
-#include "SharedModule/array.h"
+#include "SharedModule/internal.hpp"
 
 class QtObserver : public QObject
 {

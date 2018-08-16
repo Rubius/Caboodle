@@ -127,7 +127,7 @@ protected:
     virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { _setter(value.toBool(), _getter()); }
 };
 
-class ExternalNamedUIntProperty : public TExternalProperty<quint32>
+class _Export ExternalNamedUIntProperty : public TExternalProperty<quint32>
 {
     typedef TExternalProperty<quint32> Super;
 public:
@@ -170,7 +170,7 @@ typedef TExternalProperty<QString> ExternalStringProperty;
 typedef TExternalProperty<QUrl> ExternalUrlProperty;
 typedef TExternalProperty<QByteArray> ExternalByteArrayProperty;
 
-struct ExternalVector3FProperty
+struct _Export ExternalVector3FProperty
 {
     ExternalFloatProperty X;
     ExternalFloatProperty Y;

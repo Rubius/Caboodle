@@ -3,14 +3,16 @@
 
 #include <functional>
 
+#include "SharedModule/shared_decl.h"
+
 typedef std::function<void ()> FTask;
 typedef std::function<void ()> FOnFinish;
 
 class ThreadFunction
 {
 public:
-    static void Async(const FTask& function);
-    static void Async(const FTask& function, const FOnFinish& onFinish);
+    _Export static void Async(const FTask& function);
+    _Export static void Async(const FTask& function, const FOnFinish& onFinish);
 
 private:
     static class ThreadPool& threadPool();

@@ -19,7 +19,7 @@ public:
     virtual bool IsProcessCanceled() const final { return false; }
 };
 
-class ProcessBase : public IProcess
+class _Export ProcessBase : public IProcess
 {
     typedef std::function<void ()> FOnFinish;
 

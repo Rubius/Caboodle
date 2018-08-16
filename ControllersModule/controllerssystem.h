@@ -1,12 +1,12 @@
 #ifndef CONTROLLERSSYSTEM_H
 #define CONTROLLERSSYSTEM_H
 
-#include <SharedModule/name.h>
+#include <SharedModule/internal.hpp>
 
 class ControllerBase;
 class ControllersContainer;
 
-class ControllersSystem
+class _Export ControllersSystem
 {
     ControllersSystem();
 public:    

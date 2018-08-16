@@ -10,7 +10,7 @@ class QMenu;
 class DrawEngineBase;
 class ControllerBase;
 
-class ControllersContainer: public QObject
+class _Export ControllersContainer: public QObject
 {
     typedef Array<ControllerBase*> Controllers;
 public:

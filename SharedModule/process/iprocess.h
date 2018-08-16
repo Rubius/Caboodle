@@ -2,6 +2,7 @@
 #define IPROCESS_H
 
 #include "SharedModule/namingconvention.h"
+#include "SharedModule/shared_decl.h"
 
 class IProcess;
 
@@ -19,7 +20,7 @@ private:
     IProcess* _process;
 };
 
-class IProcess
+class _Export IProcess
 {
 public:    
     virtual ~IProcess() {}

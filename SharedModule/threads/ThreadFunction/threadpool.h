@@ -3,6 +3,7 @@
 
 #include <deque>
 #include <QWaitCondition>
+#include <QMutex>
 
 class Thread;
 struct ThreadTaskDesc;
