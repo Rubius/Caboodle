@@ -6,26 +6,29 @@
 #include <QTreeView>
 #include "property.h"
 
-class _Export PropertiesView : public QTreeView
+class PropertiesView : public QTreeView
 {
     Q_OBJECT
     typedef QTreeView Super;
+    Q_PROPERTY(QColor gradientLeft READ getLeftGradientColor WRITE setLeftGradientColor) TODO. Not compiling in cmake
+    Q_PROPERTY(QColor gradientRight READ getRightGradientColor WRITE setRightGradientColor)
+    Q_PROPERTY(double gradientRightBorder READ getRightGradientBorder WRITE setRightGradientBorder)
 public:
-    PropertiesView(QWidget* parent=0, Qt::WindowFlags flags=0);
-    PropertiesView(qint32 contextIndex, QWidget* parent=0, Qt::WindowFlags flags=0);
+    _Export PropertiesView(QWidget* parent=0, Qt::WindowFlags flags=0);
+    _Export PropertiesView(qint32 contextIndex, QWidget* parent=0, Qt::WindowFlags flags=0);
 
-    void SetContextIndex(qint32 contextIndex);
-    qint32 GetContextIndex() const;
+    _Export void SetContextIndex(qint32 contextIndex);
+    _Export qint32 GetContextIndex() const;
 
-    void Save(const QString& fileName);
-    void Load(const QString& fileName);
+    _Export void Save(const QString& fileName);
+    _Export void Load(const QString& fileName);
 
     class PropertiesModel* GetPropertiesModel() const { return _propertiesModel; }
 
     // QWidget interface
 protected:
-    void showEvent(QShowEvent* event) Q_DECL_OVERRIDE;
-    void mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
+    _Export void showEvent(QShowEvent* event) Q_DECL_OVERRIDE;
+    _Export void mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 
     void validateActionsVisiblity();
 
@@ -38,6 +41,17 @@ protected:
 private:
     QModelIndex _indexUnderCursor;
     QAction* _actionOpenWithTextEditor;
+
+private:
+    _Export void setLeftGradientColor(const QColor& color);
+    _Export void setRightGradientColor(const QColor& color);
+    _Export void setRightGradientBorder(double border);
+
+    _Export const QColor& getLeftGradientColor() const;
+    _Export const QColor& getRightGradientColor() const;
+    _Export double getRightGradientBorder() const;
+
+    class PropertiesDelegate* propertiesDelegate() const { return reinterpret_cast<PropertiesDelegate*>(itemDelegate()); }
 };
 
 #endif

@@ -24,6 +24,9 @@ class PropertiesDelegate : public QStyledItemDelegate
 public:
     PropertiesDelegate(QObject* parent)
         : Super(parent)
+        , _gradientLeft(0x567dbc)
+        , _gradientRight(0x6ea1f1)
+        , _gradientRightBorder(0.7)
     {}
 
     // QAbstractItemDelegate interface
@@ -35,8 +38,8 @@ public:
             painter->setPen(Qt::NoPen);
             QRect rowRect(0,option.rect.y(),option.widget->width(),orect.height());
             QLinearGradient lg(0,rowRect.y(), rowRect.width(),rowRect.y());
-            lg.setColorAt(0, 0x567dbc);
-            lg.setColorAt(0.7, 0x6ea1f1);
+            lg.setColorAt(0, _gradientLeft);
+            lg.setColorAt(_gradientRightBorder, _gradientRight);
             painter->setBrush(lg);
             if(!index.column())
                 painter->drawRect(orect.adjusted(-orect.x(),0,0,0));
@@ -141,6 +144,11 @@ public:
         }
         return Super::displayText(value, locale);
     }
+private:
+    friend class PropertiesView;
+    QColor _gradientLeft;
+    QColor _gradientRight;
+    double _gradientRightBorder;
 };
 
 static const StringProperty& textEditor(const char* path = nullptr, const char* value = nullptr)
@@ -253,5 +261,17 @@ void PropertiesView::on_OpenWithTextEditor_triggered()
 
     qCWarning(LC_SYSTEM) << "Opening" << textEditor() << arguments;
 }
+
+void PropertiesView::setLeftGradientColor(const QColor& color) { propertiesDelegate()->_gradientLeft = color; }
+
+void PropertiesView::setRightGradientColor(const QColor& color) { propertiesDelegate()->_gradientRight = color; }
+
+void PropertiesView::setRightGradientBorder(double border) { propertiesDelegate()->_gradientRightBorder = border; }
+
+const QColor&PropertiesView::getLeftGradientColor() const { return propertiesDelegate()->_gradientLeft; }
+
+const QColor&PropertiesView::getRightGradientColor() const { return propertiesDelegate()->_gradientRight; }
+
+double PropertiesView::getRightGradientBorder() const { return propertiesDelegate()->_gradientRightBorder; }
 
 #endif
