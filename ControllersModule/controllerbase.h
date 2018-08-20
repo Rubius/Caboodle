@@ -20,6 +20,7 @@ class DrawEngineBase;
 
 class _Export ControllerBase : public QObject
 {
+    Q_OBJECT
 protected:
     ControllersContainer* _container;
     ControllerBase* _parentController;
