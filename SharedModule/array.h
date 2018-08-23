@@ -270,12 +270,20 @@ public:
 
     iterator FindSorted(const T& value)
     {
-        return std::lower_bound(Begin(), End(), value);
+        auto find = std::lower_bound(Begin(), End(), value);
+        if(find != End()) {
+            find = (*find == value) ? find : End();
+        }
+        return find;
     }
 
     const_iterator FindSorted(const T& value) const
     {
-        return std::lower_bound(Begin(), End(), value);
+        auto find = std::lower_bound(Begin(), End(), value);
+        if(find != End()) {
+            find = (*find == value) ? find : End();
+        }
+        return find;
     }
 
     count_t IndexOf(const T& value) const

@@ -1,5 +1,5 @@
 #include "MemoryManager.h"
-#include <QDebug>
+#include "SharedModule/internal.hpp"
 
 QHash<size_t,qint32> MemoryManager::constructed;
 QHash<size_t,qint32> MemoryManager::destroyed;
@@ -17,15 +17,15 @@ const char *MemoryManager::typeName(size_t _type)
 
 void MemoryManager::MakeMemoryReport()
 {
-    qDebug() << "----------------------------MemoryReport------------------------";
+    qCDebug(LC_SYSTEM) << "----------------------------MemoryReport------------------------";
     QHashIterator<size_t,qint32> i(constructed);
     while(i.hasNext()){
         i.next();
         if(shouldBe(i.key())){
-            qDebug() << typeName(i.key()) << "constructed:" << i.value() << "destructed:" << destroyed.value(i.key());
+            qCDebug(LC_SYSTEM) << typeName(i.key()) << "constructed:" << i.value() << "destructed:" << destroyed.value(i.key());
         }
     }
-    qDebug() << "----------------------------------------------------------------";
+    qCDebug(LC_SYSTEM) << "----------------------------------------------------------------";
 }
 
 
