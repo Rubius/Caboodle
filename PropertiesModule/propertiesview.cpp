@@ -12,6 +12,8 @@
 #include <QProcess>
 #include <QAction>
 
+#include <SharedModule/external/utils.h>
+
 #include "PropertiesModule/propertiessystem.h"
 #include "propertiesmodel.h"
 #include "SharedGuiModule/decl.h"
@@ -186,18 +188,20 @@ PropertiesView::PropertiesView(qint32 contextIndex, QWidget* parent, Qt::WindowF
 
     header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 
-    auto addAction = [&](const QString& name, const QString& tr){
-        QAction* action = new QAction(tr, this);
-        this->addAction(action);
-        action->setObjectName(name);
-        return action;
-    };
+    _actionOpenWithTextEditor = createAction(tr("Open with text editor"), [this](){
+        QString openFile = _indexUnderCursor.data().toString();
 
-    _actionOpenWithTextEditor = addAction("OpenWithTextEditor", tr("Open with text editor"));
+        QStringList arguments { openFile };
+
+        QProcess *process = new QProcess(this);
+        connect(process, SIGNAL(finished(int)), process, SLOT(deleteLater()));
+        process->start(textEditor(), arguments);
+
+        qCWarning(LC_SYSTEM) << "Opening" << textEditor() << arguments;
+    });
+    addAction(_actionOpenWithTextEditor);
 
     setContextMenuPolicy(Qt::ActionsContextMenu);
-
-    QMetaObject::connectSlotsByName(this);
 }
 
 void PropertiesView::SetContextIndex(qint32 contextIndex)
@@ -247,19 +251,6 @@ void PropertiesView::validateActionsVisiblity()
     else {
         _actionOpenWithTextEditor->setVisible(false);
     }
-}
-
-void PropertiesView::on_OpenWithTextEditor_triggered()
-{
-    QString openFile = _indexUnderCursor.data().toString();
-
-    QStringList arguments { openFile };
-
-    QProcess *process = new QProcess(this);
-    connect(process, SIGNAL(finished(int)), process, SLOT(deleteLater()));
-    process->start(textEditor(), arguments);    
-
-    qCWarning(LC_SYSTEM) << "Opening" << textEditor() << arguments;
 }
 
 void PropertiesView::setLeftGradientColor(const QColor& color) { propertiesDelegate()->_gradientLeft = color; }

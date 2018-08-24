@@ -32,9 +32,6 @@ protected:
 
     void validateActionsVisiblity();
 
-private:
-    Q_SLOT void on_OpenWithTextEditor_triggered();
-
 protected:
     class PropertiesModel* _propertiesModel;
 
