@@ -83,7 +83,7 @@ QVariant PropertiesSystem::GetValue(const Name& path, qint32 type)
     return find.value()->getValue();
 }
 
-void PropertiesSystem::Load(const QString& fileName, quint8 contextIndex)
+void PropertiesSystem::Load(const QString& fileName, properties_context_index_t contextIndex)
 {
     Q_ASSERT(!fileName.isEmpty());
     QSettings settings(fileName, QSettings::IniFormat);
@@ -103,7 +103,7 @@ void PropertiesSystem::Load(const QString& fileName, quint8 contextIndex)
     }
 }
 
-void PropertiesSystem::Save(const QString& fileName, quint8 contextIndex)
+void PropertiesSystem::Save(const QString& fileName, properties_context_index_t contextIndex)
 {
     Q_ASSERT(!fileName.isEmpty());
     QSettings settings(fileName, QSettings::IniFormat);
@@ -136,6 +136,11 @@ void PropertiesSystem::Clear(qint32 contextIndex)
 bool PropertiesSystem::HasContext(qint32 contextIndex)
 {
     return !context(contextIndex).isEmpty();
+}
+
+properties_context_index_t PropertiesSystem::GetCurrentContextIndex()
+{
+    return currentContextIndex();
 }
 
 PropertiesSystem::FHandle& PropertiesSystem::Begin(Type type)
@@ -175,7 +180,7 @@ void PropertiesSystem::addProperty(const Name& path, Property* property) {
     }
 }
 
-QHash<Name, Property*>& PropertiesSystem::context(quint8 contextIndex)
+QHash<Name, Property*>& PropertiesSystem::context(properties_context_index_t contextIndex)
 {
     return *contexts()[contextIndex];
 }

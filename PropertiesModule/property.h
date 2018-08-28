@@ -51,6 +51,7 @@ public:
     virtual const QVariant* GetDelegateData() const { return nullptr; }
     virtual void SetDelegateData(const QVariant& value) { SetValue(value); }
 
+    QVariant GetValue() const { return getValue(); }
     virtual QVariant GetMin() const { return 0; }
     virtual QVariant GetMax() const { return 0; }
 
@@ -124,6 +125,9 @@ public:
             SetValue(_value);
         }
     }
+
+    const T& GetMinValue() const { return _min; }
+    const T& GetMaxValue() const { return _max; }
 
     virtual QVariant GetMin() const Q_DECL_OVERRIDE { return _min; }
     virtual QVariant GetMax() const Q_DECL_OVERRIDE { return _max; }

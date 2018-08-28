@@ -19,7 +19,7 @@ ControllerBase::ControllerBase(const Name& name, ControllersContainer* container
     ControllersSystem::registerController(name, this);
 }
 
-void ControllerBase:: SetCurrent()
+void ControllerBase::SetCurrent()
 {
     _container->SetCurrent(this);
 }

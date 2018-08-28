@@ -12,6 +12,8 @@ class Name;
 class StateProperty;
 template<class T> class PropertyPromise;
 
+typedef quint8 properties_context_index_t;
+
 class _Export PropertiesSystem
 {
 public:
@@ -36,13 +38,14 @@ public:
     template<class T>
     static PropertyPromise<T> GetProperty(const Name& path, const FOnChange& onChange, qint32 type = Global);
 
-    static void Load(const QString& fileName, quint8 contextIndex);
-    static void Save(const QString& fileName, quint8 contextIndex);
+    static void Load(const QString& fileName, properties_context_index_t contextIndex);
+    static void Save(const QString& fileName, properties_context_index_t contextIndex);
     // clear current context
     static void Clear();
     static void Clear(qint32 contextIndex);
 
     static bool HasContext(qint32 contextIndex);
+    static properties_context_index_t GetCurrentContextIndex();
 
     // begin current context. Global <= type < Max
     // return FHandle reference. It is property setter by default it just call SetValue()
@@ -51,7 +54,7 @@ public:
     // Example:
     // handle = [threadWherePropertyIs](const auto& setter){ threadWherePropertyIs->Asynch(setter); }
     static FHandle& Begin(Type type=Global);
-    static FHandle& Begin(qint32 type) { return Begin((Type)type); }
+    static FHandle& Begin(properties_context_index_t type) { return Begin((Type)type); }
     // convenient Begin overload. Use it when property exists in different from the main thread
     static void Begin(class ThreadEventsContainer* thread, Type type=Global);
     // call this to
@@ -60,14 +63,14 @@ public:
 private:
     friend class Property;
     friend class PropertiesModel;
-    template<class T> friend class PropertyPromise;
+    friend class PropertyPromiseBase;
 
     PropertiesSystem();
     Q_DISABLE_COPY(PropertiesSystem)
 
     static void addProperty(const Name& path, Property* property);
 
-    static QHash<Name, Property*>& context(quint8 contextIndex);
+    static QHash<Name, Property*>& context(properties_context_index_t contextIndex);
     static QHash<Name, Property*>& context();
     static FHandle defaultHandle();
     static FHandle& currentHandle();

@@ -9,6 +9,7 @@
 #include "propertiessystem.h"
 #include "propertiesview.h"
 #include "propertiesdialog.h"
+#include "widgets/propertieswidgetsconnector.h"
 #endif
 
 #endif // INTERNAL_HPP

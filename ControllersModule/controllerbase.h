@@ -39,6 +39,8 @@ public:
 
     void Accept();
     void Cancel();
+    template<class T> T* As() { return (T*)this; }
+    template<class T> const T* As() const { return (const T*)this; }
 
     Commands* GetCommands() { return &_commands; }
     ControllerBase* GetParentController() const { return static_cast<ControllerBase*>(parent()); }
