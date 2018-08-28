@@ -44,6 +44,7 @@ PropertiesConnectorBase::~PropertiesConnectorBase()
 
 void PropertiesConnectorBase::update()
 {
+    QSignalBlocker blocker(parent());
     _setter(_propertyPtr.GetProperty()->GetValue());
 }
 
