@@ -65,3 +65,13 @@ void PropertiesConnectorsContainer::Clear()
     _connectors.Clear();
 }
 
+
+PropertiesCheckBoxConnector::PropertiesCheckBoxConnector(const Name& propertyName, QCheckBox* checkBox)
+    : PropertiesConnectorBase(propertyName,
+                              [checkBox](const QVariant& value){ checkBox->setChecked(value.toBool()); },
+                              checkBox)
+{
+    _connection = connect(checkBox, &QCheckBox::clicked, [this](bool value){
+        _propertyPtr.GetProperty()->SetValue(value);
+    });
+}

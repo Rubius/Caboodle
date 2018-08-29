@@ -13,7 +13,7 @@
 
 class PropertiesConnectorBase;
 
-class PropertiesConnectorsContainer
+class _Export PropertiesConnectorsContainer
 {
 public:
     PropertiesConnectorsContainer()
@@ -27,7 +27,7 @@ private:
     StackPointers<PropertiesConnectorBase> _connectors;
 };
 
-class PropertiesConnectorContextIndexGuard
+class _Export PropertiesConnectorContextIndexGuard
 {
     properties_context_index_t _before;
 public:
@@ -57,18 +57,10 @@ protected:
     QMetaObject::Connection _connection;
 };
 
-class PropertiesCheckBoxConnector : public PropertiesConnectorBase
+class _Export PropertiesCheckBoxConnector : public PropertiesConnectorBase
 {
 public:
-    PropertiesCheckBoxConnector(const Name& propertyName, QCheckBox* checkBox)
-        : PropertiesConnectorBase(propertyName,
-                                  [checkBox](const QVariant& value){ checkBox->setChecked(value.toBool()); },
-                                  checkBox)
-    {
-        _connection = connect(checkBox, &QCheckBox::clicked, [this](bool value){
-            _propertyPtr.GetProperty()->SetValue(value);
-        });
-    }
+    PropertiesCheckBoxConnector(const Name& propertyName, QCheckBox* checkBox);
 };
 
 #include <QDoubleSpinBox>
