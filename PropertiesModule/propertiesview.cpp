@@ -153,12 +153,6 @@ private:
     double _gradientRightBorder;
 };
 
-static const StringProperty& textEditor(const char* path = nullptr, const char* value = nullptr)
-{
-    static StringProperty res(path, value);
-    return res;
-}
-
 PropertiesView::PropertiesView(QWidget* parent, Qt::WindowFlags flags)
     : PropertiesView(PropertiesSystem::Global, parent, flags)
 {
@@ -167,9 +161,8 @@ PropertiesView::PropertiesView(QWidget* parent, Qt::WindowFlags flags)
 
 PropertiesView::PropertiesView(qint32 contextIndex, QWidget* parent, Qt::WindowFlags flags)
     : Super(parent)
+    , _defaultTextEditor("Common/TextEditor", PropertiesSystem::Global)
 {
-    textEditor("Common/Text editor", "C:\\Windows\\system32\\notepad.exe");
-
     setWindowFlags(windowFlags() | flags);
     setItemDelegate(new PropertiesDelegate(this));
     setRootIsDecorated(false);
@@ -195,9 +188,9 @@ PropertiesView::PropertiesView(qint32 contextIndex, QWidget* parent, Qt::WindowF
 
         QProcess *process = new QProcess(this);
         connect(process, SIGNAL(finished(int)), process, SLOT(deleteLater()));
-        process->start(textEditor(), arguments);
+        process->start(_defaultTextEditor, arguments);
 
-        qCWarning(LC_SYSTEM) << "Opening" << textEditor() << arguments;
+        qCWarning(LC_SYSTEM) << "Opening" << _defaultTextEditor << arguments;
     });
     addAction(_actionOpenWithTextEditor);
 
@@ -245,7 +238,7 @@ void PropertiesView::mouseReleaseEvent(QMouseEvent* event)
 
 void PropertiesView::validateActionsVisiblity()
 {
-    if(_indexUnderCursor.data(PropertiesModel::RoleDelegateValue).toInt() == Property::DelegateFileName) {
+    if(_defaultTextEditor.IsValid() && _indexUnderCursor.data(PropertiesModel::RoleDelegateValue).toInt() == Property::DelegateFileName) {
         _actionOpenWithTextEditor->setVisible(true);
     }
     else {

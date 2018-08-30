@@ -69,6 +69,7 @@ typedef PropertyPromise<BoolProperty> BoolPropertyPtr;
 typedef PropertyPromise<FloatProperty> FloatPropertyPtr;
 typedef PropertyPromise<DoubleProperty> DoublePropertyPtr;
 typedef PropertyPromise<ByteArrayProperty> ByteArrayPropertyPtr;
+typedef PropertyPromise<StringProperty> StringPropertyPtr;
 
 template<class T> using PointerPropertyPtr = PropertyPromise<PointerProperty<T>>;
 

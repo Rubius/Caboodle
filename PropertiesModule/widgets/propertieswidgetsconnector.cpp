@@ -1,4 +1,6 @@
 #include "propertieswidgetsconnector.h"
+#include <QCheckBox>
+#include <QLineEdit>
 
 PropertiesConnectorContextIndexGuard::PropertiesConnectorContextIndexGuard(properties_context_index_t contextIndex)
     : _before(currentContextIndex())
@@ -73,5 +75,15 @@ PropertiesCheckBoxConnector::PropertiesCheckBoxConnector(const Name& propertyNam
 {
     _connection = connect(checkBox, &QCheckBox::clicked, [this](bool value){
         _propertyPtr.GetProperty()->SetValue(value);
+    });
+}
+
+PropertiesLineEditConnector::PropertiesLineEditConnector(const Name& propertyName, QLineEdit* lineEdit)
+    : PropertiesConnectorBase(propertyName,
+                                  [lineEdit](const QVariant& value){ lineEdit->setText(value.toString()); },
+                                  lineEdit)
+{
+    _connection = connect(lineEdit, &QLineEdit::editingFinished, [this, lineEdit](){
+        _propertyPtr.GetProperty()->SetValue(lineEdit->text());
     });
 }

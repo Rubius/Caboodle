@@ -7,11 +7,13 @@
  * Note: Usually there is no necessity to delete Connector, expecialy if it reffered to Global context index scope
 */
 
-#include <QCheckBox>
-
 #include "PropertiesModule/propertypromise.h"
 
 class PropertiesConnectorBase;
+class QCheckBox;
+class QDoubleSpinBox;
+class QSpinBox;
+class QLineEdit;
 
 class _Export PropertiesConnectorsContainer
 {
@@ -63,7 +65,11 @@ public:
     PropertiesCheckBoxConnector(const Name& propertyName, QCheckBox* checkBox);
 };
 
-#include <QDoubleSpinBox>
+class _Export PropertiesLineEditConnector : public PropertiesConnectorBase
+{
+public:
+    PropertiesLineEditConnector(const Name& propertyName, QLineEdit* lineEdit);
+};
 
 template<class SpinType, typename valueType>
 class PropertiesSpinBoxConnectorBase : public PropertiesConnectorBase

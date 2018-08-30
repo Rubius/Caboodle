@@ -4,7 +4,7 @@
 #ifndef NO_WIDGETS_INTERFACE
 
 #include <QTreeView>
-#include "property.h"
+#include "propertypromise.h"
 
 class _Export PropertiesView : public QTreeView
 {
@@ -38,6 +38,8 @@ protected:
 private:
     QModelIndex _indexUnderCursor;
     QAction* _actionOpenWithTextEditor;
+
+    StringPropertyPtr _defaultTextEditor;
 
 private:
     void setLeftGradientColor(const QColor& color);
