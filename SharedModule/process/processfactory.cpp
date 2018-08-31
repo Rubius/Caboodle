@@ -80,6 +80,8 @@ static bool DoNothingCallback(ProcessValue*) { return true; }
 ProcessFactory::ProcessFactory()
     : _indeterminateOptions(&DoNothingCallback)
     , _determinateOptions(&DoNothingCallback)
+    , _shadowIndeterminateOptions(&DoNothingCallback)
+    , _shadowDeterminateOptions(&DoNothingCallback)
 {
 
 }
@@ -100,6 +102,16 @@ void ProcessFactory::SetIndeterminateCallback(const ProcessValue::FCallback& opt
     _indeterminateOptions = options;
 }
 
+void ProcessFactory::SetShadowDeterminateCallback(const ProcessValue::FCallback& options)
+{
+    _shadowDeterminateOptions = options;
+}
+
+void ProcessFactory::SetShadowIndeterminateCallback(const ProcessValue::FCallback& options)
+{
+    _shadowIndeterminateOptions = options;
+}
+
 ProcessValue* ProcessFactory::createIndeterminate() const
 {
     return new ProcessValue(_indeterminateOptions);
@@ -110,3 +122,12 @@ ProcessDeterminateValue* ProcessFactory::createDeterminate() const
     return new ProcessDeterminateValue(_determinateOptions);
 }
 
+ProcessValue* ProcessFactory::createShadowIndeterminate() const
+{
+    return new ProcessValue(_shadowIndeterminateOptions);
+}
+
+ProcessDeterminateValue*ProcessFactory::createShadowDeterminate() const
+{
+    return new ProcessDeterminateValue(_shadowDeterminateOptions);
+}

@@ -129,6 +129,8 @@ public:
     const T& GetMinValue() const { return _min; }
     const T& GetMaxValue() const { return _max; }
 
+    TProperty<T>& operator=(const T& value) { this->SetValue(value); return *this; }
+
     virtual QVariant GetMin() const Q_DECL_OVERRIDE { return _min; }
     virtual QVariant GetMax() const Q_DECL_OVERRIDE { return _max; }
 protected:

@@ -11,8 +11,8 @@ class _Export QProcessBase : public ProcessBase
 public:
     QProcessBase(){}
 
-    void BeginProcess(const QString& title);
-    void BeginProcess(const QString& title, int stepsCount);
+    void BeginProcess(const QString& title, bool shadow = false);
+    void BeginProcess(const QString& title, int stepsCount, bool shadow = false);
     void SetProcessTitle(const QString& title);
 };
 

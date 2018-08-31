@@ -94,15 +94,23 @@ public:
 
     void SetDeterminateCallback(const ProcessValue::FCallback& options);
     void SetIndeterminateCallback(const ProcessValue::FCallback& options);
+    void SetShadowDeterminateCallback(const ProcessValue::FCallback& options);
+    void SetShadowIndeterminateCallback(const ProcessValue::FCallback& options);
 
 private:
     friend class ProcessBase;
     ProcessValue* createIndeterminate() const;
     ProcessDeterminateValue* createDeterminate() const;
+    ProcessValue* createShadowIndeterminate() const;
+    ProcessDeterminateValue* createShadowDeterminate() const;
 
 private:
     ProcessValue::FCallback _indeterminateOptions;
     ProcessValue::FCallback _determinateOptions;
+    ProcessValue::FCallback _shadowIndeterminateOptions;
+    ProcessValue::FCallback _shadowDeterminateOptions;
 };
+
+
 
 #endif // PROCCESSMANAGER_H

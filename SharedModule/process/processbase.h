@@ -11,8 +11,8 @@ class ProcessValue;
 class ProcessDummy : public IProcess
 {
 public:
-    virtual void BeginProcess(const wchar_t*) final {}
-    virtual void BeginProcess(const wchar_t*, int) final {}
+    virtual void BeginProcess(const wchar_t*, bool) final {}
+    virtual void BeginProcess(const wchar_t*, int, bool) final {}
     virtual void SetProcessTitle(const wchar_t*) final {}
     virtual void IncreaseProcessStepsCount(int) final {}
     virtual void IncrementProcess() final {}
@@ -27,8 +27,8 @@ public:
     ProcessBase();
     ~ProcessBase();
 
-    void BeginProcess(const wchar_t* title) override;
-    void BeginProcess(const wchar_t* title, int stepsCount) override;
+    void BeginProcess(const wchar_t* title, bool shadow = false) override;
+    void BeginProcess(const wchar_t* title, int stepsCount, bool shadow = false) override;
     void SetProcessTitle(const wchar_t* title) override;
     void IncreaseProcessStepsCount(int stepsCount) override;
     void IncrementProcess() override;

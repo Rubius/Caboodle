@@ -13,23 +13,23 @@ ProcessBase::~ProcessBase()
 
 }
 
-void ProcessBase::BeginProcess(const wchar_t* title)
+void ProcessBase::BeginProcess(const wchar_t* title, bool shadow)
 {
     if(_processValue != nullptr) {
         _processValue->setNextProcessExpected();
     }
     _processValue = nullptr;
-    _processValue.reset(ProcessFactory::Instance().createIndeterminate());
+    _processValue.reset(shadow ? ProcessFactory::Instance().createShadowIndeterminate() : ProcessFactory::Instance().createIndeterminate());
     _processValue->init(title);
 }
 
-void ProcessBase::BeginProcess(const wchar_t* title, int stepsCount)
+void ProcessBase::BeginProcess(const wchar_t* title, int stepsCount, bool shadow)
 {
     if(_processValue != nullptr) {
         _processValue->setNextProcessExpected();
     }
     _processValue = nullptr;
-    auto value = ProcessFactory::Instance().createDeterminate();
+    auto value = shadow ? ProcessFactory::Instance().createShadowDeterminate() : ProcessFactory::Instance().createDeterminate();
     value->init(title, stepsCount);
     _processValue.reset(value);
 }
