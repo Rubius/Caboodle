@@ -144,8 +144,8 @@ Q_DECLARE_TYPEINFO(CastablePtr, Q_PRIMITIVE_TYPE);
 _Export Q_DECLARE_LOGGING_CATEGORY(LC_UI)
 _Export Q_DECLARE_LOGGING_CATEGORY(LC_SYSTEM)
 
-#ifndef QT_NO_DEBUG
-#define DEBUG_BUILD
+#if !defined QT_NO_DEBUG || defined QT_PROFILE
+#define SHOW_HIDDEN_FUNCTIONALITY
 #endif
 
 //========================================================DEBUG ONLY================================================

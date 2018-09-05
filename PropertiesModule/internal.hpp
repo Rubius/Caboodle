@@ -8,6 +8,7 @@
 #include "propertiesvalidators.h"
 #include "propertiessystem.h"
 #include "propertiesview.h"
+#include "propertiesdialogbase.h"
 #include "propertiesdialog.h"
 #include "widgets/propertieswidgetsconnector.h"
 #endif
