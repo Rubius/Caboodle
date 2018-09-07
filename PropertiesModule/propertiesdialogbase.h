@@ -5,7 +5,7 @@
 
 #include "propertypromise.h"
 
-class PropertiesDialogBase : public QDialog
+class _Export PropertiesDialogBase : public QDialog
 {
     typedef QDialog Super;
 protected:
