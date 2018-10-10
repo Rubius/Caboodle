@@ -239,10 +239,30 @@ public:
     virtual const QVariant* GetDelegateData() const Q_DECL_OVERRIDE{ return &_names; }
 
 protected:
-    virtual QVariant getDisplayValue() const Q_DECL_OVERRIDE { return _names.value<QStringList>().at(_value); }
+    virtual QVariant getDisplayValue() const Q_DECL_OVERRIDE { return _names.value<QStringList>().at(Super::_value); }
 
 private:
     QVariant _names;
+};
+
+class _Export UrlListProperty : public TPropertyBase<QList<QUrl>>
+{
+    typedef TPropertyBase<QList<QUrl>> Super;
+public:
+    UrlListProperty(const Name& path, qint32 maxCount = -1)
+        : Super(path, {})
+        , _maxCount(maxCount)
+    {}
+
+    void AddUniqueUrl(const QUrl& url);
+
+    // Property interface
+protected:
+    virtual QVariant getValue() const Q_DECL_OVERRIDE { return QUrl::toStringList(Super::_value); }
+    virtual void setValueInternal(const QVariant& value) Q_DECL_OVERRIDE { Super::_value = QUrl::fromStringList(value.toStringList()); }
+
+private:
+    qint32 _maxCount;
 };
 
 // Internals
