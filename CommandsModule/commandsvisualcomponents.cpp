@@ -55,7 +55,7 @@ QVariant CommandsModel::data(const QModelIndex& index, int role) const
             capacity_type commandIndex = static_cast<capacity_type>(index.row() - 1);
             return QString::number(index.row()) + "-" + _commands->GetCommand(commandIndex)->GetText();
         } else {
-            return tr("<пусто>");
+            return tr("<empty>");
         }
     default:
         break;
