@@ -126,8 +126,10 @@ public:
     {
         _min = min;
         _max = max;
-        if(Super::_value < _min || Super::_value > _max) {
-            SetValue(Super::_value);
+        if(Super::_value < _min) {
+            SetValue(_min);
+        }else if(Super::_value > _max) {
+            SetValue(_max);
         }
     }
 
