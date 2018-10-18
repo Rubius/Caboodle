@@ -72,13 +72,13 @@ public:
     PropertiesLineEditConnector(const Name& propertyName, QLineEdit* lineEdit);
 };
 
-class PropertiesSpinBoxConnector : public PropertiesConnectorBase
+class _Export PropertiesSpinBoxConnector : public PropertiesConnectorBase
 {
 public:
     PropertiesSpinBoxConnector(const Name& propertyName, QSpinBox* spinBox);
 };
 
-class PropertiesDoubleSpinBoxConnector : public PropertiesConnectorBase
+class _Export PropertiesDoubleSpinBoxConnector : public PropertiesConnectorBase
 {
 public:
     PropertiesDoubleSpinBoxConnector(const Name& propertyName, QDoubleSpinBox* spinBox);
