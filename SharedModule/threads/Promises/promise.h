@@ -8,15 +8,19 @@
 template<class T>
 class PromiseData
 {
+    typedef std::function<void (const T&)> FCallback;
+    typedef std::function<void ()> FOnError;
+
     template<class T> friend class Promise;
-    std::function<void (const T&)> PromiseCallback;
-    std::function<void (const std::exception& exception)> ErrorCallback;
+    FCallback PromiseCallback;
+    FOnError ErrorCallback;
     std::atomic_bool IsResolved;
+    std::atomic_bool IsRejected;
+    T ResolvedValue;
 
     PromiseData()
-        : PromiseCallback([](const T&){})
-        , ErrorCallback([](const std::exception&){})
-        , IsResolved(false)
+        : IsResolved(false)
+        , IsRejected(false)
     {}
 };
 
@@ -28,64 +32,44 @@ public:
     Promise()
         : m_data(new PromiseData<T>())
     {}
-    Promise(const std::function<void (T)>& value)
-        : m_data(new PromiseData<T>())
-    {
-        m_data->PromiseCallback = value;
-    }
 
     void Resolve(const T& value)
     {
-        m_data->PromiseCallback(value);
-        m_data->IsResolved = true;
+        if(m_data->PromiseCallback) {
+            m_data->PromiseCallback(value);
+        } else {
+            m_data->IsResolved = true;
+            m_data->ResolvedValue = value;
+        }
+    }
+
+    void Then(const typename PromiseData<T>::FCallback& then)
+    {
+        if(m_data->IsResolved) {
+            then(m_data->ResolvedValue);
+        }
+        m_data->PromiseCallback = then;
+    }
+
+    Promise<T>& Catch(const typename PromiseData<T>::FOnError& catchHandler)
+    {
+        if(m_data->IsRejected) {
+            catchHandler();
+        }
+        m_data->ErrorCallback = catchHandler;
+        return *this;
     }
 
     void Reject()
     {
-        m_data->ErrorCallback(std::runtime_error("error during computing"));
-    }
-
-private:
-    template<class T> friend class PromiseDelegate;
-    void then(const std::function<void (T)>& then)
-    {
-        m_data->PromiseCallback = then;
-    }
-
-    void catch_(const std::function<void (const std::exception& exception)>& catchHandler)
-    {
-        m_data->ErrorCallback = catchHandler;
-    }
-};
-
-template<class T>
-class PromiseDelegate
-{
-    Promise<T>* m_promise;
-public:
-    PromiseDelegate(Promise<T>* promise)
-        : m_promise(promise)
-    {}
-
-    void Then(const std::function<void (T)>& then)
-    {
-        if(m_promise != nullptr) {
-            m_promise->then(then);
-        }
-    }
-
-    PromiseDelegate& Catch(const std::function<void (const std::exception& exception)>& catchHandler)
-    {
-        if(m_promise != nullptr) {
-            m_promise->catch_(catchHandler);
+        if(m_data->ErrorCallback) {
+            m_data->ErrorCallback();
         } else {
-            catchHandler(std::runtime_error("task was not started"));
+            m_data->IsRejected = true;
         }
-        return *this;
     }
 };
 
 typedef Promise<bool> AsyncResult;
-typedef PromiseDelegate<bool> HandleAsyncResult;
 
 #endif // PROMISE_H

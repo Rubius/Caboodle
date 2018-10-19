@@ -36,7 +36,7 @@ void Thread::run()
     }
     catch (...)
     {
-        _task->Result.Reject();
+        _task->Result.Resolve(false);
     }
 
     ThreadTaskDesc* nextTask = _pool->takeTask();
