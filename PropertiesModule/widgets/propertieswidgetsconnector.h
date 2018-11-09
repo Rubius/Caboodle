@@ -38,6 +38,11 @@ public:
     explicit PropertiesConnectorContextIndexGuard();
     ~PropertiesConnectorContextIndexGuard();
 
+    template<class T> static PropertyPromise<T> GetProperty(const Name& name)
+    {
+        return PropertiesSystem::GetProperty<T>(name, currentContextIndex());
+    }
+
 private:
     friend class PropertiesConnectorBase;
     static properties_context_index_t& currentContextIndex();
